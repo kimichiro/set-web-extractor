@@ -16,6 +16,9 @@ export class CronJobService {
         this.logService.info(this.job.name, CronJobService.name)
 
         const result = await this.setWebScrapeService.scrapeFinancialHighlight()
-        this.logService.info(`Result length: ${result.length}`, CronJobService.name)
+        this.logService.info(
+            `Result length: ${result.length}`,
+            CronJobService.name,
+        )
     }
 }

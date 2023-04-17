@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common'
 import { ScheduleModule as NestScheduleModule } from '@nestjs/schedule'
 import { CoreModule } from '../core/core.module'
 import { CronJobService } from './service/cron-job.service'
+import { ExtractModule } from 'src/extract/extract.module'
 
 @Module({
-    imports: [CoreModule, NestScheduleModule.forRoot()],
+    imports: [CoreModule, ExtractModule, NestScheduleModule.forRoot()],
     providers: [CronJobService],
     exports: [CronJobService],
 })

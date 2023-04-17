@@ -5,9 +5,7 @@ import { LogService } from 'src/core/log/service/log.service'
 
 @Injectable()
 export class SetWebScrapeService {
-    constructor(
-        private readonly logService: LogService,
-    ) {}
+    constructor(private readonly logService: LogService) {}
 
     async scrapeFinancialHighlight(): Promise<Dto.ScrapeFinancialHighlight.Result> {
         const logService = this.logService
