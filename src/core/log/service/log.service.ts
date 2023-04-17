@@ -1,35 +1,51 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { LogServiceDto } from './log.service.dto'
+import { LogServiceDto as Dto } from './log.service.dto'
 
 @Injectable()
 export class LogService {
     private readonly logger: Logger = new Logger()
 
     info(
-        message: LogServiceDto.Info.Params[0],
-        context: LogServiceDto.Info.Params[1],
-    ): LogServiceDto.Info.Result {
-        this.logger.log(message, context)
+        message: Dto.Info.Params[0],
+        context?: Dto.Info.Params[1],
+    ): Dto.Info.Result {
+        if (context == null) {
+            this.logger.log(message)
+        } else {
+            this.logger.log(message, context)
+        }
     }
 
     warn(
-        message: LogServiceDto.Warn.Params[0],
-        context: LogServiceDto.Warn.Params[1],
-    ): LogServiceDto.Warn.Result {
-        this.logger.warn(message, context)
+        message: Dto.Warn.Params[0],
+        context?: Dto.Warn.Params[1],
+    ): Dto.Warn.Result {
+        if (context == null) {
+            this.logger.warn(message)
+        } else {
+            this.logger.warn(message, context)
+        }
     }
 
     error(
-        message: LogServiceDto.Error.Params[0],
-        context: LogServiceDto.Error.Params[1],
-    ): LogServiceDto.Error.Result {
-        this.logger.error(message, context)
+        message: Dto.Error.Params[0],
+        context?: Dto.Error.Params[1],
+    ): Dto.Error.Result {
+        if (context == null) {
+            this.logger.error(message)
+        } else {
+            this.logger.error(message, context)
+        }
     }
 
     debug(
-        message: LogServiceDto.Debug.Params[0],
-        context: LogServiceDto.Debug.Params[1],
-    ): LogServiceDto.Debug.Result {
-        this.logger.debug(message, context)
+        message: Dto.Debug.Params[0],
+        context?: Dto.Debug.Params[1],
+    ): Dto.Debug.Result {
+        if (context == null) {
+            this.logger.debug(message)
+        } else {
+            this.logger.debug(message, context)
+        }
     }
 }

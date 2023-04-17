@@ -4,15 +4,8 @@ import { CoreModule } from '../core/core.module'
 import { CronJobService } from './service/cron-job.service'
 
 @Module({
-    imports: [
-        CoreModule,
-        NestScheduleModule.forRoot(),
-    ],
-    providers: [
-        CronJobService,
-    ],
-    exports: [
-        CronJobService,
-    ],
+    imports: [CoreModule, NestScheduleModule.forRoot()],
+    providers: [CronJobService],
+    exports: [CronJobService],
 })
 export class ScheduleModule {}
