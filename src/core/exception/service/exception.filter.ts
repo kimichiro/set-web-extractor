@@ -21,12 +21,12 @@ export class ExceptionFilter implements NestExceptionFilter {
         if (exception instanceof HttpException) {
             const cause = exception.cause
             if (cause instanceof AxiosError) {
-                errorCode = cause.code
+                errorCode = cause?.code
             } else {
                 errorCode = exception.getStatus()
             }
 
-            errorMessage = cause.message
+            errorMessage = cause?.message
         }
 
         response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
