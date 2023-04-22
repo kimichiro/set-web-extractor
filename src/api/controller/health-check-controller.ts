@@ -1,13 +1,22 @@
 import { Controller, Get } from '@nestjs/common'
 import { HealthCheckService } from '../service/health-check.service'
-import { HealthCheckControllerDto } from './health-check-controller.dto'
+import { HealthCheckControllerDto as Dto } from './health-check-controller.dto'
+import { SetExtractService } from 'src/etl/service/set-extract.service'
 
-@Controller(HealthCheckControllerDto.Name)
+@Controller(Dto.Name)
 export class HealthCheckController {
-    constructor(private readonly healthCheckService: HealthCheckService) {}
+    constructor(
+        private readonly healthCheckService: HealthCheckService,
+        private readonly setExtractService: SetExtractService,
+    ) {}
 
-    @Get(HealthCheckControllerDto.HttpGet.Endpoint)
-    httpGet(): HealthCheckControllerDto.HttpGet.Response {
+    @Get(Dto.HttpGet.Endpoint)
+    httpGet(): Dto.HttpGet.Response {
         return this.healthCheckService.serverInfo()
+    }
+
+    @Get(Dto.HttpGetTrigger.Endpoint)
+    httpGetTrigger(): Promise<Dto.HttpGetTrigger.Response> {
+        return this.setExtractService.retreiveData()
     }
 }

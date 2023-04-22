@@ -2,5 +2,8 @@
     "javascript.format.semicolons": "remove",
     "typescript.format.semicolons": "remove",
     "javascript.preferences.quoteStyle": "single",
-    "typescript.preferences.quoteStyle": "single"
+    "typescript.preferences.quoteStyle": "single",
+    "javascript.preferences.importModuleSpecifier": "relative",
+    "javascript.preferences.importModuleSpecifierEnding": "auto",
+    "typescript.preferences.importModuleSpecifier": "relative"
 }
