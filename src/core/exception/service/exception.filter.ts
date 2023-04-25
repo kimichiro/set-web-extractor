@@ -27,6 +27,9 @@ export class ExceptionFilter implements NestExceptionFilter {
             }
 
             errorMessage = cause?.message
+        } else if (exception instanceof Error) {
+            errorCode = exception.name
+            errorMessage = exception.message
         }
 
         response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
