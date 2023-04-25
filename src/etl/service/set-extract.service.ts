@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
+import { LogService } from '../../core/log/service/log.service'
+import { ProjectRepository } from '../../database/repository/project.repository'
 import { SetExtractServiceDto as Dto } from './set-extract.service.dto'
-import { LogService } from 'src/core/log/service/log.service'
 import { SetHttpService } from './set-http.service'
 
 @Injectable()
@@ -8,6 +9,7 @@ export class SetExtractService {
     constructor(
         private readonly logService: LogService,
         private readonly setHttpService: SetHttpService,
+        private readonly projectRepository: ProjectRepository,
     ) {}
 
     async retreiveData(): Promise<Dto.RetreiveData.Result> {
@@ -23,6 +25,12 @@ export class SetExtractService {
             `Stock listing - found ${equityStocks.length} symbol(s)`,
             SetExtractService.name,
         )
+
+        this.projectRepository.insert({
+            releaseCandidateNumber: 111,
+            releaseCandidateNumber2: 222,
+            repositoryAccessToken: 'abcdef',
+        })
 
         await Promise.all(
             equityStocks
