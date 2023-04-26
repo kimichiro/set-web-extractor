@@ -26,9 +26,12 @@ export class DbContextService {
     }
 
     run(next: () => void): void {
-        this.asyncLocalStorage.run({
-            defaultTransaction: this.createTransaction(),
-        }, next)
+        this.asyncLocalStorage.run(
+            {
+                defaultTransaction: this.createTransaction(),
+            },
+            next,
+        )
     }
 
     reset(): void {

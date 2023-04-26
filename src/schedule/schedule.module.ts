@@ -6,7 +6,12 @@ import { EtlModule } from 'src/etl/etl.module'
 import { DatabaseModule } from '../database/database.module'
 
 @Module({
-    imports: [CoreModule, DatabaseModule, EtlModule, NestScheduleModule.forRoot()],
+    imports: [
+        CoreModule,
+        DatabaseModule,
+        EtlModule,
+        NestScheduleModule.forRoot(),
+    ],
     providers: [CronJobService],
     exports: [CronJobService],
 })

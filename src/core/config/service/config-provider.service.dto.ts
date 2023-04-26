@@ -29,18 +29,21 @@ export namespace ConfigProviderServiceDto {
     export namespace GetString {
         export type Params<TKey extends ConfigKey> = TKey
 
-        export type Result<TKey extends ConfigKey> = ConfigValueType[TKey] & string
+        export type Result<TKey extends ConfigKey> = ConfigValueType[TKey] &
+            string
     }
 
     export namespace GetNumber {
         export type Params<TKey extends ConfigKey> = TKey
 
-        export type Result<TKey extends ConfigKey> = ConfigValueType[TKey] & number
+        export type Result<TKey extends ConfigKey> = ConfigValueType[TKey] &
+            number
     }
 
     export namespace GetBoolean {
         export type Params<TKey extends ConfigKey> = TKey
 
-        export type Result<TKey extends ConfigKey> = ConfigValueType[TKey] & boolean
+        export type Result<TKey extends ConfigKey> = ConfigValueType[TKey] &
+            boolean
     }
 }

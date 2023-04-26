@@ -12,12 +12,17 @@ import { SetHttpServiceDto as Dto } from './set-http.service.dto'
 @Injectable()
 export class SetHttpService {
     private readonly cache: Map<string, string>
+    private lastRequestUrl: string
 
     constructor(
         private readonly logService: LogService,
         private readonly httpService: HttpService,
     ) {
         this.cache = new Map<string, string>()
+    }
+
+    getLastRequestUrl(): string {
+        return this.lastRequestUrl
     }
 
     async productStockSearch(
@@ -169,6 +174,7 @@ export class SetHttpService {
                 this.cache.set(Dto.CacheKey.Cookie, persistentCookie)
             }
 
+            this.lastRequestUrl = url
             this.logService.debug(
                 `Request success - ${url}`,
                 SetHttpService.name,

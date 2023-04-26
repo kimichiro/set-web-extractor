@@ -9,7 +9,7 @@ import { CoreModule } from '../core/core.module'
 import entities from './entity'
 import { DbContextInterceptor } from './interceptor/db-context.interceptor'
 import { DbContextMiddleware } from './middleware/db-context.middleware'
-import { ProjectRepository } from './repository/project.repository'
+import { SetApiRawDataRepository } from './repository/set-api-raw-data.repository'
 import { DbContextService } from './service/db-context.service'
 
 @Module({
@@ -20,11 +20,21 @@ import { DbContextService } from './service/db-context.service'
             imports: [CoreModule],
             useFactory: (configProviderService: ConfigProviderService) => ({
                 type: 'postgres',
-                host: configProviderService.getString(ConfigProviderServiceDto.ConfigKey.PostgresHost),
-                port: configProviderService.getString(ConfigProviderServiceDto.ConfigKey.PostgresPort),
-                username: configProviderService.getString(ConfigProviderServiceDto.ConfigKey.PostgresUser),
-                password: configProviderService.getString(ConfigProviderServiceDto.ConfigKey.PostgresPassword),
-                database: configProviderService.getString(ConfigProviderServiceDto.ConfigKey.PostgresDb),
+                host: configProviderService.getString(
+                    ConfigProviderServiceDto.ConfigKey.PostgresHost,
+                ),
+                port: configProviderService.getString(
+                    ConfigProviderServiceDto.ConfigKey.PostgresPort,
+                ),
+                username: configProviderService.getString(
+                    ConfigProviderServiceDto.ConfigKey.PostgresUser,
+                ),
+                password: configProviderService.getString(
+                    ConfigProviderServiceDto.ConfigKey.PostgresPassword,
+                ),
+                database: configProviderService.getString(
+                    ConfigProviderServiceDto.ConfigKey.PostgresDb,
+                ),
                 synchronize: false,
                 logging: false,
                 entities: [...entities],
@@ -42,12 +52,9 @@ import { DbContextService } from './service/db-context.service'
             provide: APP_INTERCEPTOR,
             useClass: DbContextInterceptor,
         },
-        ProjectRepository,
+        SetApiRawDataRepository,
     ],
-    exports: [
-        DbContextService,
-        ProjectRepository,
-    ],
+    exports: [DbContextService, SetApiRawDataRepository],
 })
 export class DatabaseModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {

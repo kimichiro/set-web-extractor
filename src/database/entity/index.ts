@@ -1,5 +1,3 @@
-import { ProjectEntity } from './project.entity'
+import { SetApiRawDataEntity } from './set-api-raw-data.entity'
 
-export default [
-    ProjectEntity,
-]
+export default [SetApiRawDataEntity]
