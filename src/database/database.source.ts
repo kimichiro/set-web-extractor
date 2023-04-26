@@ -24,6 +24,7 @@ const defaultDataSource = new DataSource({
     migrationsTableName: 'typeorm_migration',
     migrations: [__dirname + '/migration/*.ts'],
     namingStrategy: new SnakeNamingStrategy(),
+    ssl: process.env.NODE_ENV === 'production',
     subscribers: [],
 })
 

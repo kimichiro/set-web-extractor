@@ -1,5 +1,7 @@
 export namespace ConfigProviderServiceDto {
     export enum ConfigKey {
+        NodeEnv = 'NODE_ENV',
+
         PostgresHost = 'POSTGRES_HOST',
         PostgresPort = 'POSTGRES_PORT',
         PostgresDb = 'POSTGRES_DB',
@@ -9,6 +11,8 @@ export namespace ConfigProviderServiceDto {
     }
 
     export interface ConfigValueType {
+        [ConfigKey.NodeEnv]: string
+
         [ConfigKey.PostgresHost]: string
         [ConfigKey.PostgresPort]: number
         [ConfigKey.PostgresDb]: string
@@ -18,6 +22,8 @@ export namespace ConfigProviderServiceDto {
     }
 
     export const ConfigDefaultValue: ConfigValueType = {
+        [ConfigKey.NodeEnv]: 'development',
+
         [ConfigKey.PostgresHost]: 'postgres',
         [ConfigKey.PostgresPort]: 19999,
         [ConfigKey.PostgresDb]: 'postgres',
