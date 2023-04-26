@@ -4,7 +4,7 @@ export namespace CollectionControllerDto {
     export const Name = 'collection'
 
     export namespace HttpGetListSymbol {
-        export const Endpoint = 'list-symbol'
+        export const Endpoint = 'symbol'
 
         export type Response = SetExtractServiceDto.ListSymbol.Result
     }
