@@ -39,9 +39,10 @@ import { DbContextService } from './service/db-context.service'
                 logging: false,
                 entities: [...entities],
                 namingStrategy: new SnakeNamingStrategy(),
-                ssl: configProviderService.getString(
-                    ConfigProviderServiceDto.ConfigKey.NodeEnv,
-                ) === 'production',
+                ssl:
+                    configProviderService.getString(
+                        ConfigProviderServiceDto.ConfigKey.NodeEnv,
+                    ) === 'production',
                 subscribers: [],
             }),
             inject: [ConfigProviderService],
