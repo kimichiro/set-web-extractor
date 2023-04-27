@@ -30,7 +30,7 @@ export class TaskService {
                             s.securityType.toUpperCase() === 'S',
                     )
                     .map(s => s.symbol)
-                    .slice(0, 4)
+                    .slice(0, 400)
 
                 for (const symbol of symbols) {
                     await defaultTransaction.begin()
