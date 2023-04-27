@@ -87,6 +87,164 @@ export class SetExtractService {
             SetApiRawDataType.SetCompanySymbolProfile,
         )
 
+        await this.setHttpService.productStockSymbolFactsheet({
+            language: 'en',
+            stockQuote: symbol,
+        }),
+
+        await this.storeRawData(
+            () =>
+                this.setHttpService.stockSymbolOverview({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetStockSymbolOverview,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.stockSymbolCorporateActionHistorical({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetStockSymbolCorporateActionHistorical,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.stockSymbolChartQuotation({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetStockSymbolChartQuotation,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.stockSymbolChartPerformance({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetStockSymbolChartPerformance,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.stockSymbolHistoricalTrading({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetStockSymbolHistoricalTrading,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.newsSymbolList({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetNewsSymbolList,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.indexList({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetIndexList,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.indexSymbolChartPerformance({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetIndexSymbolChartPerformance,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.factsheetSymbolPricePerformance({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetFactsheetSymbolPricePerformance,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.factsheetSymbolProfile({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetFactsheetSymbolProfile,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.factsheetSymbolTradingStat({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetFactsheetSymbolTradingStat,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.factsheetSymbolFinancialStatementBalanceSheet({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetFactsheetSymbolFinancialStatementBalanceSheet,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.factsheetSymbolFinancialStatementIncomeStatement({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetFactsheetSymbolFinancialStatementIncomeStatement,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.factsheetSymbolFinancialStatementCashFlow({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetFactsheetSymbolFinancialStatementCashFlow,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.factsheetSymbolFinancialRatio({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetFactsheetSymbolFinancialRatio,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.factsheetSymbolFinancialGrowth({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetFactsheetSymbolFinancialGrowth,
+        )
+        
+        await this.storeRawData(
+            () =>
+                this.setHttpService.factsheetSymbolCapitalMovement({
+                    language: 'en',
+                    stockQuote: symbol,
+                }),
+            SetApiRawDataType.SetFactsheetSymbolCapitalMovement,
+        )
+
         return { symbol }
     }
 

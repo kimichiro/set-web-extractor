@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
 import { LogService } from '../../core/log/service/log.service'
-// import { SetApiRawDataRepository } from '../../database/repository/set-api-raw-data.repository'
-// import { DbContextService } from '../../database/service/db-context.service'
 import { CronJobServiceDto as Dto } from './cron-job.service.dto'
 
 @Injectable()
 export class CronJobService {
     constructor(
-        private readonly logService: LogService, // private readonly dbContextService: DbContextService, // private readonly setApiRawDataRepository: SetApiRawDataRepository,
+        private readonly logService: LogService,
     ) {}
 
     @Cron(Dto.Job.CronExpression)
