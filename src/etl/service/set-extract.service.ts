@@ -154,15 +154,6 @@ export class SetExtractService {
 
         await this.storeRawData(
             () =>
-                this.setHttpService.indexSymbolChartPerformance({
-                    symbol,
-                    period: SetHttpServiceDto.Period.Last3Months,
-                }),
-            SetApiRawDataType.SetIndexSymbolChartPerformance,
-        )
-
-        await this.storeRawData(
-            () =>
                 this.setHttpService.factsheetSymbolPricePerformance({
                     language: 'en',
                     stockQuote: symbol,
