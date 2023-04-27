@@ -14,14 +14,14 @@ export class CronJobService {
     @Cron(Dto.TriggerLoadSetApiRawData.CronExpression)
     async triggerLoadSetApiRawData(): Promise<Dto.TriggerLoadSetApiRawData.Result> {
         this.logService.info(
-            `Begin job ${this.triggerLoadSetApiRawData.name}`,
+            `Job begin ${this.triggerLoadSetApiRawData.name}`,
             CronJobService.name,
         )
 
         await this.taskService.loadSetApiRawData()
 
         this.logService.info(
-            `End job ${this.triggerLoadSetApiRawData.name}`,
+            `Job success ${this.triggerLoadSetApiRawData.name}`,
             CronJobService.name,
         )
     }
