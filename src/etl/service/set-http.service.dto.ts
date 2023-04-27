@@ -1,9 +1,4 @@
 export namespace SetHttpServiceDto {
-    export enum CacheKey {
-        Cookie = 'cache-cookie',
-        Referer = 'cache-referer',
-    }
-
     export interface BaseParams {
         language: string
     }
@@ -349,6 +344,8 @@ export namespace SetHttpServiceDto {
     export namespace StockList {
         export const Endpoint = () => `https://www.set.or.th/api/set/stock/list`
 
+        export type Params = BaseParams
+
         export interface Result {
             securitySymbols: SecuritySymbol[]
         }
@@ -507,7 +504,7 @@ export namespace SetHttpServiceDto {
         export const Endpoint = (stockQuote: string, period: Period) =>
             `https://www.set.or.th/api/set/stock/${stockQuote}/chart-quotation?period=${period}&accumulated=false`
 
-        export interface Params {
+        export interface Params extends BaseParams {
             stockQuote: string
             period: Period
         }
@@ -522,7 +519,7 @@ export namespace SetHttpServiceDto {
         export const Endpoint = (stockQuote: string, period: Period) =>
             `https://www.set.or.th/api/set/stock/${stockQuote}/chart-performance?period=${period}&accumulated=true`
 
-        export interface Params {
+        export interface Params extends BaseParams {
             stockQuote: string
             period: Period
         }
@@ -607,6 +604,8 @@ export namespace SetHttpServiceDto {
         export const Endpoint = () =>
             `https://www.set.or.th/api/set/index/info/list?type=INDEX`
 
+        export type Params = BaseParams
+
         export interface IndexIndustrySector {
             symbol: string
             nameEN: string
@@ -638,7 +637,7 @@ export namespace SetHttpServiceDto {
         export const Endpoint = (symbol: string, period: Period) =>
             `https://www.set.or.th/api/set/index/${symbol}/chart-performance?period=${period}`
 
-        export interface Params {
+        export interface Params extends BaseParams {
             symbol: string
             period: Period
         }

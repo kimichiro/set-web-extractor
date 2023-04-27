@@ -11,14 +11,15 @@ import { SetHttpServiceDto as Dto } from './set-http.service.dto'
 
 @Injectable()
 export class SetHttpService {
-    private readonly cache: Map<string, string>
+    private cookie: string
     private lastRequestUrl: string
 
     constructor(
         private readonly logService: LogService,
         private readonly httpService: HttpService,
     ) {
-        this.cache = new Map<string, string>()
+        this.cookie = null
+        this.lastRequestUrl = null
     }
 
     getLastRequestUrl(): string {
@@ -33,7 +34,6 @@ export class SetHttpService {
         await this.httpRequest<string>(
             Dto.ProductStockSearch.Endpoint(language),
             'GET',
-            { persistent: true, reset: true },
         )
     }
 
@@ -45,7 +45,6 @@ export class SetHttpService {
         await this.httpRequest<string>(
             Dto.ProductStockSymbolPrice.Endpoint(language, stockQuote),
             'GET',
-            { persistent: true, reset: true },
         )
     }
 
@@ -57,14 +56,20 @@ export class SetHttpService {
         await this.httpRequest<string>(
             Dto.ProductStockSymbolFactsheet.Endpoint(language, stockQuote),
             'GET',
-            { persistent: true, reset: true },
         )
     }
 
-    async stockList(): Promise<Dto.StockList.Result> {
+    async stockList(
+        params: Dto.StockList.Params,
+    ): Promise<Dto.StockList.Result> {
+        const { language } = params
+
         const result = await this.httpRequest<Dto.StockList.Result>(
             Dto.StockList.Endpoint(),
             'GET',
+            {
+                referer: Dto.ProductStockSearch.Endpoint(language),
+            },
         )
         return result
     }
@@ -77,6 +82,12 @@ export class SetHttpService {
         const result = await this.httpRequest<Dto.StockSymbolOverview.Result>(
             Dto.StockSymbolOverview.Endpoint(language, stockQuote),
             'GET',
+            {
+                referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+            },
         )
 
         return result
@@ -94,6 +105,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolPrice.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
         return result
     }
@@ -110,6 +127,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolPrice.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
         return result
     }
@@ -122,6 +145,12 @@ export class SetHttpService {
         const result = await this.httpRequest<Dto.StockSymbolIndexList.Result>(
             Dto.StockSymbolIndexList.Endpoint(language, stockQuote),
             'GET',
+            {
+                referer: Dto.ProductStockSymbolPrice.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+            },
         )
         return result
     }
@@ -138,6 +167,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolPrice.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
         return result
     }
@@ -150,6 +185,12 @@ export class SetHttpService {
         const result = await this.httpRequest<Dto.StockSymbolProfile.Result>(
             Dto.StockSymbolProfile.Endpoint(language, stockQuote),
             'GET',
+            {
+                referer: Dto.ProductStockSymbolPrice.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+            },
         )
         return result
     }
@@ -166,6 +207,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -174,12 +221,18 @@ export class SetHttpService {
     async stockSymbolChartQuotation(
         params: Dto.StockSymbolChartQuotation.Params,
     ): Promise<Dto.StockSymbolChartQuotation.Result> {
-        const { stockQuote, period } = params
+        const { language, stockQuote, period } = params
 
         const result =
             await this.httpRequest<Dto.StockSymbolChartQuotation.Result>(
                 Dto.StockSymbolChartQuotation.Endpoint(stockQuote, period),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -188,12 +241,18 @@ export class SetHttpService {
     async stockSymbolChartPerformance(
         params: Dto.StockSymbolChartPerformance.Params,
     ): Promise<Dto.StockSymbolChartPerformance.Result> {
-        const { stockQuote, period } = params
+        const { language, stockQuote, period } = params
 
         const result =
             await this.httpRequest<Dto.StockSymbolChartPerformance.Result>(
                 Dto.StockSymbolChartPerformance.Endpoint(stockQuote, period),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -208,6 +267,12 @@ export class SetHttpService {
             await this.httpRequest<Dto.StockSymbolHistoricalTrading.Result>(
                 Dto.StockSymbolHistoricalTrading.Endpoint(language, stockQuote),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -221,6 +286,12 @@ export class SetHttpService {
         const result = await this.httpRequest<Dto.NewsSymbolList.Result>(
             Dto.NewsSymbolList.Endpoint(language, stockQuote, limit),
             'GET',
+            {
+                referer: Dto.ProductStockSymbolPrice.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+            },
         )
 
         return result
@@ -234,14 +305,27 @@ export class SetHttpService {
         const result = await this.httpRequest<Dto.CompanySymbolProfile.Result>(
             Dto.CompanySymbolProfile.Endpoint(language, stockQuote),
             'GET',
+            {
+                referer: Dto.ProductStockSymbolPrice.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+            },
         )
         return result
     }
 
-    async indexList(): Promise<Dto.IndexList.Result> {
+    async indexList(
+        params: Dto.IndexList.Params,
+    ): Promise<Dto.IndexList.Result> {
+        const { language } = params
+
         const result = await this.httpRequest<Dto.IndexList.Result>(
             Dto.IndexList.Endpoint(),
             'GET',
+            {
+                referer: Dto.ProductStockSearch.Endpoint(language),
+            },
         )
 
         return result
@@ -250,12 +334,15 @@ export class SetHttpService {
     async indexSymbolChartPerformance(
         params: Dto.IndexSymbolChartPerformance.Params,
     ): Promise<Dto.IndexSymbolChartPerformance.Result> {
-        const { symbol, period } = params
+        const { language, symbol, period } = params
 
         const result =
             await this.httpRequest<Dto.IndexSymbolChartPerformance.Result>(
                 Dto.IndexSymbolChartPerformance.Endpoint(symbol, period),
                 'GET',
+                {
+                    referer: Dto.ProductStockSearch.Endpoint(language),
+                },
             )
 
         return result
@@ -273,6 +360,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -287,6 +380,12 @@ export class SetHttpService {
             await this.httpRequest<Dto.FactsheetSymbolProfile.Result>(
                 Dto.FactsheetSymbolProfile.Endpoint(language, stockQuote),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -301,6 +400,12 @@ export class SetHttpService {
             await this.httpRequest<Dto.FactsheetSymbolTradingStat.Result>(
                 Dto.FactsheetSymbolTradingStat.Endpoint(language, stockQuote),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -318,6 +423,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -335,6 +446,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -352,6 +469,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -369,6 +492,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -386,6 +515,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -403,6 +538,12 @@ export class SetHttpService {
                     stockQuote,
                 ),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -417,6 +558,12 @@ export class SetHttpService {
             await this.httpRequest<Dto.FactsheetSymbolTradingSign.Result>(
                 Dto.FactsheetSymbolTradingSign.Endpoint(language, stockQuote),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -431,6 +578,12 @@ export class SetHttpService {
             await this.httpRequest<Dto.FactsheetSymbolMarketAlert.Result>(
                 Dto.FactsheetSymbolMarketAlert.Endpoint(language, stockQuote),
                 'GET',
+                {
+                    referer: Dto.ProductStockSymbolFactsheet.Endpoint(
+                        language,
+                        stockQuote,
+                    ),
+                },
             )
 
         return result
@@ -439,16 +592,9 @@ export class SetHttpService {
     private async httpRequest<T>(
         url: string,
         method: Method,
-        options?: { persistent?: boolean; reset?: boolean },
+        options?: { referer?: string },
     ): Promise<T> {
-        const { persistent, reset } = options || {
-            persistent: false,
-            reset: false,
-        }
-
-        if (reset === true) {
-            this.cache.clear()
-        }
+        const { referer } = options || {}
 
         try {
             this.logService.debug(`Request begin - ${url}`, SetHttpService.name)
@@ -456,18 +602,16 @@ export class SetHttpService {
                 url,
                 method,
                 headers: {
-                    ['Cookie']: this.cache.get(Dto.CacheKey.Cookie),
-                    ['Referer']: this.cache.get(Dto.CacheKey.Referer),
+                    ['Cookie']: this.cookie,
+                    ['Referer']: referer,
                 },
             })
 
-            if (persistent === true) {
-                const setCookieValues = parse(response.headers['set-cookie'])
-                const persistentCookie = setCookieValues
-                    .map(c => `${c.name}=${c.value}`)
-                    .join(';')
-                this.cache.set(Dto.CacheKey.Cookie, persistentCookie)
-            }
+            const setCookieValues = parse(response.headers['set-cookie'])
+            const persistentCookie = setCookieValues
+                .map(c => `${c.name}=${c.value}`)
+                .join(';')
+            this.cookie = persistentCookie
 
             this.lastRequestUrl = url
             this.logService.debug(
@@ -492,10 +636,6 @@ export class SetHttpService {
                 throw new InternalServerErrorException(error, error.message)
             } else {
                 throw new InternalServerErrorException(error?.toString())
-            }
-        } finally {
-            if (persistent === true) {
-                this.cache.set(Dto.CacheKey.Referer, url)
             }
         }
     }
