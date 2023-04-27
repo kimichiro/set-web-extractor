@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common'
-import { SetExtractService } from './service/set-extract.service'
-import { CoreModule } from 'src/core/core.module'
+import { CoreModule } from '../core/core.module'
 import { DatabaseModule } from '../database/database.module'
+import { SetCollectionService } from './service/set-collection.service'
 import { SetHttpService } from './service/set-http.service'
 
 @Module({
     imports: [CoreModule, DatabaseModule],
-    providers: [SetExtractService, SetHttpService],
-    exports: [SetExtractService, SetHttpService],
+    providers: [SetCollectionService, SetHttpService],
+    exports: [SetCollectionService, SetHttpService],
 })
 export class EtlModule {}

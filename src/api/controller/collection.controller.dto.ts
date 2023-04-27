@@ -1,4 +1,4 @@
-import { SetExtractServiceDto } from 'src/etl/service/set-extract.service.dto'
+import { SetCollectionServiceDto } from 'src/etl/service/set-collection.service.dto'
 
 export namespace CollectionControllerDto {
     export const Name = 'collection'
@@ -6,7 +6,7 @@ export namespace CollectionControllerDto {
     export namespace HttpGetListSymbol {
         export const Endpoint = 'symbol'
 
-        export type Response = SetExtractServiceDto.ListSymbol.Result
+        export type Response = SetCollectionServiceDto.ListSymbol.Result
     }
 
     export namespace HttpGetFetchSymbol {
@@ -16,6 +16,6 @@ export namespace CollectionControllerDto {
 
         export const Endpoint = `symbol/:${Param.Symbol}`
 
-        export type Response = SetExtractServiceDto.FetchSymbol.Result
+        export type Response = SetCollectionServiceDto.FetchSymbol.Result
     }
 }

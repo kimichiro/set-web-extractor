@@ -1,10 +1,10 @@
 import { Controller, Get, Param } from '@nestjs/common'
-import { SetExtractService } from '../../etl/service/set-extract.service'
+import { SetCollectionService } from '../../etl/service/set-collection.service'
 import { CollectionControllerDto as Dto } from './collection.controller.dto'
 
 @Controller(Dto.Name)
 export class CollectionController {
-    constructor(private readonly setExtractService: SetExtractService) {}
+    constructor(private readonly setExtractService: SetCollectionService) {}
 
     @Get(Dto.HttpGetListSymbol.Endpoint)
     httpGetListSymbol(): Promise<Dto.HttpGetListSymbol.Response> {
