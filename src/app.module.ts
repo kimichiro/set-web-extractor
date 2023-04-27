@@ -12,8 +12,8 @@ import { ScheduleModule } from './schedule/schedule.module'
         CoreModule,
         DatabaseModule,
         EtlModule,
-        ApiModule,
         ScheduleModule,
+        ApiModule,
         RouterModule.register([
             {
                 path: '',

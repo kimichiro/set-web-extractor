@@ -1,6 +1,6 @@
 export namespace CronJobServiceDto {
-    export namespace JobLoadSetApiRawData {
-        export const CronExpression = '21 * * * *'
+    export namespace TriggerLoadSetApiRawData {
+        export const CronExpression = '30 * * * *'
 
         export type Result = void
     }
