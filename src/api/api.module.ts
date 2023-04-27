@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
+import { EtlModule } from '../etl/etl.module'
+import { ScheduleModule } from '../schedule/schedule.module'
 import { CollectionController } from './controller/collection.controller'
-import { EtlModule } from 'src/etl/etl.module'
 import { JobController } from './controller/job.controller'
-import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
     imports: [EtlModule, ScheduleModule],
