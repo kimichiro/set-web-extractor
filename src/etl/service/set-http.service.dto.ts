@@ -8,6 +8,16 @@ export namespace SetHttpServiceDto {
         language: string
     }
 
+    export enum Period {
+        Last1Day = '1D',
+        Last1Month = '1M',
+        Last3Months = '3M',
+        Last6Months = '6M',
+        Last1Year = '1Y',
+        Last3Years = '3Y',
+        Last5Years = '5Y',
+    }
+
     export interface SecuritySymbol {
         symbol: string
         nameTH: string
@@ -262,7 +272,7 @@ export namespace SetHttpServiceDto {
         dividendPayoutRatio: number
         averageValue: number
     }
-        
+
     export interface FinancialStatement {
         symbol: string
         quarter: string
@@ -494,11 +504,12 @@ export namespace SetHttpServiceDto {
     }
 
     export namespace StockSymbolChartQuotation {
-        export const Endpoint = (language: string, stockQuote: string) =>
-            `https://www.set.or.th/api/set/stock/${stockQuote}/chart-quotation?period={{period}}&accumulated=false`
+        export const Endpoint = (stockQuote: string, period: Period) =>
+            `https://www.set.or.th/api/set/stock/${stockQuote}/chart-quotation?period=${period}&accumulated=false`
 
-        export interface Params extends BaseParams {
+        export interface Params {
             stockQuote: string
+            period: Period
         }
 
         export interface Result {
@@ -508,11 +519,12 @@ export namespace SetHttpServiceDto {
     }
 
     export namespace StockSymbolChartPerformance {
-        export const Endpoint = (language: string, stockQuote: string) =>
-            `https://www.set.or.th/api/set/stock/${stockQuote}/chart-performance?period={{period}}&accumulated=true`
+        export const Endpoint = (stockQuote: string, period: Period) =>
+            `https://www.set.or.th/api/set/stock/${stockQuote}/chart-performance?period=${period}&accumulated=true`
 
-        export interface Params extends BaseParams {
+        export interface Params {
             stockQuote: string
+            period: Period
         }
 
         export interface Result {
@@ -533,11 +545,16 @@ export namespace SetHttpServiceDto {
     }
 
     export namespace NewsSymbolList {
-        export const Endpoint = (language: string, stockQuote: string) =>
-            `https://www.set.or.th/api/set/news/${stockQuote}/list?lang=${language}&limit={{result_limit}}`
+        export const Endpoint = (
+            language: string,
+            stockQuote: string,
+            limit: number,
+        ) =>
+            `https://www.set.or.th/api/set/news/${stockQuote}/list?lang=${language}&limit=${limit}`
 
         export interface Params extends BaseParams {
             stockQuote: string
+            limit: number
         }
 
         export interface Result {
@@ -587,12 +604,8 @@ export namespace SetHttpServiceDto {
     }
 
     export namespace IndexList {
-        export const Endpoint = (language: string, stockQuote: string) =>
+        export const Endpoint = () =>
             `https://www.set.or.th/api/set/index/info/list?type=INDEX`
-
-        export interface Params extends BaseParams {
-            stockQuote: string
-        }
 
         export interface IndexIndustrySector {
             symbol: string
@@ -622,11 +635,12 @@ export namespace SetHttpServiceDto {
     }
 
     export namespace IndexSymbolChartPerformance {
-        export const Endpoint = (language: string, stockQuote: string) =>
-            `https://www.set.or.th/api/set/index/{{index_symbol}}/chart-performance?period={{period}}`
+        export const Endpoint = (symbol: string, period: Period) =>
+            `https://www.set.or.th/api/set/index/${symbol}/chart-performance?period=${period}`
 
-        export interface Params extends BaseParams {
-            stockQuote: string
+        export interface Params {
+            symbol: string
+            period: Period
         }
 
         export interface Result {
@@ -687,7 +701,7 @@ export namespace SetHttpServiceDto {
             auditEnd: string
             auditChoice: null
             auditors: ProfileAuditor[]
-            lastParChange: ProfileLastParChange,
+            lastParChange: ProfileLastParChange
             freeFloats: ProfileFreeFloat[]
             foreignLimitAsOf: string
             percentForeignHolder: number

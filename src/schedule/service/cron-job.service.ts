@@ -5,9 +5,7 @@ import { CronJobServiceDto as Dto } from './cron-job.service.dto'
 
 @Injectable()
 export class CronJobService {
-    constructor(
-        private readonly logService: LogService,
-    ) {}
+    constructor(private readonly logService: LogService) {}
 
     @Cron(Dto.Job.CronExpression)
     async job(): Promise<Dto.Job.Result> {

@@ -159,10 +159,14 @@ export class SetHttpService {
     ): Promise<Dto.StockSymbolCorporateActionHistorical.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.StockSymbolCorporateActionHistorical.Result>(
-            Dto.StockSymbolCorporateActionHistorical.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.StockSymbolCorporateActionHistorical.Result>(
+                Dto.StockSymbolCorporateActionHistorical.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+                'GET',
+            )
 
         return result
     }
@@ -170,12 +174,13 @@ export class SetHttpService {
     async stockSymbolChartQuotation(
         params: Dto.StockSymbolChartQuotation.Params,
     ): Promise<Dto.StockSymbolChartQuotation.Result> {
-        const { language, stockQuote } = params
+        const { stockQuote, period } = params
 
-        const result = await this.httpRequest<Dto.StockSymbolChartQuotation.Result>(
-            Dto.StockSymbolChartQuotation.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.StockSymbolChartQuotation.Result>(
+                Dto.StockSymbolChartQuotation.Endpoint(stockQuote, period),
+                'GET',
+            )
 
         return result
     }
@@ -183,12 +188,13 @@ export class SetHttpService {
     async stockSymbolChartPerformance(
         params: Dto.StockSymbolChartPerformance.Params,
     ): Promise<Dto.StockSymbolChartPerformance.Result> {
-        const { language, stockQuote } = params
+        const { stockQuote, period } = params
 
-        const result = await this.httpRequest<Dto.StockSymbolChartPerformance.Result>(
-            Dto.StockSymbolChartPerformance.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.StockSymbolChartPerformance.Result>(
+                Dto.StockSymbolChartPerformance.Endpoint(stockQuote, period),
+                'GET',
+            )
 
         return result
     }
@@ -198,10 +204,11 @@ export class SetHttpService {
     ): Promise<Dto.StockSymbolHistoricalTrading.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.StockSymbolHistoricalTrading.Result>(
-            Dto.StockSymbolHistoricalTrading.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.StockSymbolHistoricalTrading.Result>(
+                Dto.StockSymbolHistoricalTrading.Endpoint(language, stockQuote),
+                'GET',
+            )
 
         return result
     }
@@ -209,10 +216,10 @@ export class SetHttpService {
     async newsSymbolList(
         params: Dto.NewsSymbolList.Params,
     ): Promise<Dto.NewsSymbolList.Result> {
-        const { language, stockQuote } = params
+        const { language, stockQuote, limit } = params
 
         const result = await this.httpRequest<Dto.NewsSymbolList.Result>(
-            Dto.NewsSymbolList.Endpoint(language, stockQuote),
+            Dto.NewsSymbolList.Endpoint(language, stockQuote, limit),
             'GET',
         )
 
@@ -231,13 +238,9 @@ export class SetHttpService {
         return result
     }
 
-    async indexList(
-        params: Dto.IndexList.Params,
-    ): Promise<Dto.IndexList.Result> {
-        const { language, stockQuote } = params
-
+    async indexList(): Promise<Dto.IndexList.Result> {
         const result = await this.httpRequest<Dto.IndexList.Result>(
-            Dto.IndexList.Endpoint(language, stockQuote),
+            Dto.IndexList.Endpoint(),
             'GET',
         )
 
@@ -247,12 +250,13 @@ export class SetHttpService {
     async indexSymbolChartPerformance(
         params: Dto.IndexSymbolChartPerformance.Params,
     ): Promise<Dto.IndexSymbolChartPerformance.Result> {
-        const { language, stockQuote } = params
+        const { symbol, period } = params
 
-        const result = await this.httpRequest<Dto.IndexSymbolChartPerformance.Result>(
-            Dto.IndexSymbolChartPerformance.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.IndexSymbolChartPerformance.Result>(
+                Dto.IndexSymbolChartPerformance.Endpoint(symbol, period),
+                'GET',
+            )
 
         return result
     }
@@ -262,10 +266,14 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolPricePerformance.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolPricePerformance.Result>(
-            Dto.FactsheetSymbolPricePerformance.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolPricePerformance.Result>(
+                Dto.FactsheetSymbolPricePerformance.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+                'GET',
+            )
 
         return result
     }
@@ -275,10 +283,11 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolProfile.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolProfile.Result>(
-            Dto.FactsheetSymbolProfile.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolProfile.Result>(
+                Dto.FactsheetSymbolProfile.Endpoint(language, stockQuote),
+                'GET',
+            )
 
         return result
     }
@@ -288,10 +297,11 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolTradingStat.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolTradingStat.Result>(
-            Dto.FactsheetSymbolTradingStat.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolTradingStat.Result>(
+                Dto.FactsheetSymbolTradingStat.Endpoint(language, stockQuote),
+                'GET',
+            )
 
         return result
     }
@@ -301,10 +311,14 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolFinancialStatementBalanceSheet.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolFinancialStatementBalanceSheet.Result>(
-            Dto.FactsheetSymbolFinancialStatementBalanceSheet.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolFinancialStatementBalanceSheet.Result>(
+                Dto.FactsheetSymbolFinancialStatementBalanceSheet.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+                'GET',
+            )
 
         return result
     }
@@ -314,10 +328,14 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolFinancialStatementIncomeStatement.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolFinancialStatementIncomeStatement.Result>(
-            Dto.FactsheetSymbolFinancialStatementIncomeStatement.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolFinancialStatementIncomeStatement.Result>(
+                Dto.FactsheetSymbolFinancialStatementIncomeStatement.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+                'GET',
+            )
 
         return result
     }
@@ -327,10 +345,14 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolFinancialStatementCashFlow.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolFinancialStatementCashFlow.Result>(
-            Dto.FactsheetSymbolFinancialStatementCashFlow.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolFinancialStatementCashFlow.Result>(
+                Dto.FactsheetSymbolFinancialStatementCashFlow.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+                'GET',
+            )
 
         return result
     }
@@ -340,10 +362,14 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolFinancialRatio.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolFinancialRatio.Result>(
-            Dto.FactsheetSymbolFinancialRatio.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolFinancialRatio.Result>(
+                Dto.FactsheetSymbolFinancialRatio.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+                'GET',
+            )
 
         return result
     }
@@ -353,10 +379,14 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolFinancialGrowth.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolFinancialGrowth.Result>(
-            Dto.FactsheetSymbolFinancialGrowth.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolFinancialGrowth.Result>(
+                Dto.FactsheetSymbolFinancialGrowth.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+                'GET',
+            )
 
         return result
     }
@@ -366,10 +396,14 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolCapitalMovement.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolCapitalMovement.Result>(
-            Dto.FactsheetSymbolCapitalMovement.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolCapitalMovement.Result>(
+                Dto.FactsheetSymbolCapitalMovement.Endpoint(
+                    language,
+                    stockQuote,
+                ),
+                'GET',
+            )
 
         return result
     }
@@ -379,10 +413,11 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolTradingSign.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolTradingSign.Result>(
-            Dto.FactsheetSymbolTradingSign.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolTradingSign.Result>(
+                Dto.FactsheetSymbolTradingSign.Endpoint(language, stockQuote),
+                'GET',
+            )
 
         return result
     }
@@ -392,14 +427,14 @@ export class SetHttpService {
     ): Promise<Dto.FactsheetSymbolMarketAlert.Result> {
         const { language, stockQuote } = params
 
-        const result = await this.httpRequest<Dto.FactsheetSymbolMarketAlert.Result>(
-            Dto.FactsheetSymbolMarketAlert.Endpoint(language, stockQuote),
-            'GET',
-        )
+        const result =
+            await this.httpRequest<Dto.FactsheetSymbolMarketAlert.Result>(
+                Dto.FactsheetSymbolMarketAlert.Endpoint(language, stockQuote),
+                'GET',
+            )
 
         return result
     }
-
 
     private async httpRequest<T>(
         url: string,

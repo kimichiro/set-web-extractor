@@ -4,6 +4,7 @@ import { SetApiRawDataRepository } from '../../database/repository/set-api-raw-d
 import { SetExtractServiceDto as Dto } from './set-extract.service.dto'
 import { SetHttpService } from './set-http.service'
 import { SetApiRawDataType } from '../../database/entity/enum.entity'
+import { SetHttpServiceDto } from './set-http.service.dto'
 
 @Injectable()
 export class SetExtractService {
@@ -91,16 +92,15 @@ export class SetExtractService {
             language: 'en',
             stockQuote: symbol,
         }),
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.stockSymbolOverview({
+                        language: 'en',
+                        stockQuote: symbol,
+                    }),
+                SetApiRawDataType.SetStockSymbolOverview,
+            )
 
-        await this.storeRawData(
-            () =>
-                this.setHttpService.stockSymbolOverview({
-                    language: 'en',
-                    stockQuote: symbol,
-                }),
-            SetApiRawDataType.SetStockSymbolOverview,
-        )
-        
         await this.storeRawData(
             () =>
                 this.setHttpService.stockSymbolCorporateActionHistorical({
@@ -109,25 +109,25 @@ export class SetExtractService {
                 }),
             SetApiRawDataType.SetStockSymbolCorporateActionHistorical,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.stockSymbolChartQuotation({
-                    language: 'en',
                     stockQuote: symbol,
+                    period: SetHttpServiceDto.Period.Last3Months,
                 }),
             SetApiRawDataType.SetStockSymbolChartQuotation,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.stockSymbolChartPerformance({
-                    language: 'en',
                     stockQuote: symbol,
+                    period: SetHttpServiceDto.Period.Last3Months,
                 }),
             SetApiRawDataType.SetStockSymbolChartPerformance,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.stockSymbolHistoricalTrading({
@@ -136,34 +136,31 @@ export class SetExtractService {
                 }),
             SetApiRawDataType.SetStockSymbolHistoricalTrading,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.newsSymbolList({
                     language: 'en',
                     stockQuote: symbol,
+                    limit: 20,
                 }),
             SetApiRawDataType.SetNewsSymbolList,
         )
-        
+
         await this.storeRawData(
-            () =>
-                this.setHttpService.indexList({
-                    language: 'en',
-                    stockQuote: symbol,
-                }),
+            () => this.setHttpService.indexList(),
             SetApiRawDataType.SetIndexList,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.indexSymbolChartPerformance({
-                    language: 'en',
-                    stockQuote: symbol,
+                    symbol,
+                    period: SetHttpServiceDto.Period.Last3Months,
                 }),
             SetApiRawDataType.SetIndexSymbolChartPerformance,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.factsheetSymbolPricePerformance({
@@ -172,7 +169,7 @@ export class SetExtractService {
                 }),
             SetApiRawDataType.SetFactsheetSymbolPricePerformance,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.factsheetSymbolProfile({
@@ -181,7 +178,7 @@ export class SetExtractService {
                 }),
             SetApiRawDataType.SetFactsheetSymbolProfile,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.factsheetSymbolTradingStat({
@@ -190,25 +187,29 @@ export class SetExtractService {
                 }),
             SetApiRawDataType.SetFactsheetSymbolTradingStat,
         )
-        
+
         await this.storeRawData(
             () =>
-                this.setHttpService.factsheetSymbolFinancialStatementBalanceSheet({
-                    language: 'en',
-                    stockQuote: symbol,
-                }),
+                this.setHttpService.factsheetSymbolFinancialStatementBalanceSheet(
+                    {
+                        language: 'en',
+                        stockQuote: symbol,
+                    },
+                ),
             SetApiRawDataType.SetFactsheetSymbolFinancialStatementBalanceSheet,
         )
-        
+
         await this.storeRawData(
             () =>
-                this.setHttpService.factsheetSymbolFinancialStatementIncomeStatement({
-                    language: 'en',
-                    stockQuote: symbol,
-                }),
+                this.setHttpService.factsheetSymbolFinancialStatementIncomeStatement(
+                    {
+                        language: 'en',
+                        stockQuote: symbol,
+                    },
+                ),
             SetApiRawDataType.SetFactsheetSymbolFinancialStatementIncomeStatement,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.factsheetSymbolFinancialStatementCashFlow({
@@ -217,7 +218,7 @@ export class SetExtractService {
                 }),
             SetApiRawDataType.SetFactsheetSymbolFinancialStatementCashFlow,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.factsheetSymbolFinancialRatio({
@@ -226,7 +227,7 @@ export class SetExtractService {
                 }),
             SetApiRawDataType.SetFactsheetSymbolFinancialRatio,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.factsheetSymbolFinancialGrowth({
@@ -235,7 +236,7 @@ export class SetExtractService {
                 }),
             SetApiRawDataType.SetFactsheetSymbolFinancialGrowth,
         )
-        
+
         await this.storeRawData(
             () =>
                 this.setHttpService.factsheetSymbolCapitalMovement({
