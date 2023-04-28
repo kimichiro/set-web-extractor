@@ -7,7 +7,7 @@ export class ConfigProviderService {
     constructor(private readonly configService: ConfigService) {}
 
     isProduction(): boolean {
-        return this.getBoolean(Dto.ConfigKey.NodeEnv) === 'production'
+        return this.getString(Dto.ConfigKey.NodeEnv) === 'production'
     }
 
     getString<TKey extends Dto.ConfigKey>(
