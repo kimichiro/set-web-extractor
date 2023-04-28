@@ -6,6 +6,10 @@ import { ConfigProviderServiceDto as Dto } from './config-provider.service.dto'
 export class ConfigProviderService {
     constructor(private readonly configService: ConfigService) {}
 
+    isProduction(): boolean {
+        return this.getBoolean(Dto.ConfigKey.NodeEnv) === 'production'
+    }
+
     getString<TKey extends Dto.ConfigKey>(
         key: Dto.GetString.Params<TKey>,
     ): Dto.GetString.Result<TKey> {

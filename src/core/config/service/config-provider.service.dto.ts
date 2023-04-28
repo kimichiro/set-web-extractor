@@ -2,16 +2,27 @@ export namespace ConfigProviderServiceDto {
     export enum ConfigKey {
         NodeEnv = 'NODE_ENV',
 
+        BullDelay = 'BULL_DELAY',
+        BullTimeout = 'BULL_TIMEOUT',
+
         PostgresHost = 'POSTGRES_HOST',
         PostgresPort = 'POSTGRES_PORT',
         PostgresDb = 'POSTGRES_DB',
         PostgresUser = 'POSTGRES_USER',
         PostgresPassword = 'POSTGRES_PASSWORD',
         PostgresDialect = 'POSTGRES_DIALECT',
+
+        RedisHost = 'REDIS_HOST',
+        RedisPort = 'REDIS_PORT',
+        RedisUser = 'REDIS_USER',
+        RedisPassword = 'REDIS_PASSWORD',
     }
 
     export interface ConfigValueType {
         [ConfigKey.NodeEnv]: string
+
+        [ConfigKey.BullDelay]: number
+        [ConfigKey.BullTimeout]: number
 
         [ConfigKey.PostgresHost]: string
         [ConfigKey.PostgresPort]: number
@@ -19,10 +30,18 @@ export namespace ConfigProviderServiceDto {
         [ConfigKey.PostgresUser]: string
         [ConfigKey.PostgresPassword]: string
         [ConfigKey.PostgresDialect]: string
+
+        [ConfigKey.RedisHost]: string
+        [ConfigKey.RedisPort]: number
+        [ConfigKey.RedisUser]: string
+        [ConfigKey.RedisPassword]: string
     }
 
     export const ConfigDefaultValue: ConfigValueType = {
         [ConfigKey.NodeEnv]: 'development',
+
+        [ConfigKey.BullDelay]: 1000,
+        [ConfigKey.BullTimeout]: 60000,
 
         [ConfigKey.PostgresHost]: 'postgres',
         [ConfigKey.PostgresPort]: 19999,
@@ -30,6 +49,11 @@ export namespace ConfigProviderServiceDto {
         [ConfigKey.PostgresUser]: 'postgres',
         [ConfigKey.PostgresPassword]: 'postgres',
         [ConfigKey.PostgresDialect]: 'postgres',
+
+        [ConfigKey.RedisHost]: 'localhost',
+        [ConfigKey.RedisPort]: 16666,
+        [ConfigKey.RedisUser]: '',
+        [ConfigKey.RedisPassword]: '',
     }
 
     export namespace GetString {

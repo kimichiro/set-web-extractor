@@ -2,26 +2,26 @@ import { Injectable } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
 import { LogService } from '../../core/log/service/log.service'
 import { CronJobServiceDto as Dto } from './cron-job.service.dto'
-import { TaskService } from './task.service'
+import { SetApiLoadService } from './set-api-load.service'
 
 @Injectable()
 export class CronJobService {
     constructor(
         private readonly logService: LogService,
-        private readonly taskService: TaskService,
+        private readonly setWebLoadService: SetApiLoadService,
     ) {}
 
     @Cron(Dto.TriggerLoadSetApiRawData.CronExpression)
     async triggerLoadSetApiRawData(): Promise<Dto.TriggerLoadSetApiRawData.Result> {
         this.logService.info(
-            `Job begin ${this.triggerLoadSetApiRawData.name}`,
+            `Cron begin ${this.triggerLoadSetApiRawData.name}`,
             CronJobService.name,
         )
 
-        await this.taskService.loadSetApiRawData()
+        await this.setWebLoadService.listSymbol()
 
         this.logService.info(
-            `Job success ${this.triggerLoadSetApiRawData.name}`,
+            `Cron success ${this.triggerLoadSetApiRawData.name}`,
             CronJobService.name,
         )
     }

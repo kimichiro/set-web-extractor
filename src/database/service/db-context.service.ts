@@ -2,6 +2,7 @@ import { AsyncLocalStorage } from 'async_hooks'
 import { Injectable } from '@nestjs/common'
 import { DataSource, QueryRunner } from 'typeorm'
 import { InjectDataSource } from '@nestjs/typeorm'
+import { LogService } from '../../core/log/service/log.service'
 
 export interface DbTransaction {
     queryRunner: QueryRunner
@@ -17,6 +18,7 @@ interface DbContext {
 @Injectable()
 export class DbContextService {
     constructor(
+        private readonly logService: LogService,
         private readonly asyncLocalStorage: AsyncLocalStorage<DbContext>,
         @InjectDataSource('default') private readonly dataSource: DataSource,
     ) {}
@@ -25,19 +27,19 @@ export class DbContextService {
         return this.dbContext.defaultTransaction
     }
 
-    run(next: () => void): void {
-        this.asyncLocalStorage.run(
-            {
-                defaultTransaction: this.createTransaction(),
-            },
-            next,
-        )
-    }
+    async run(next: () => void | Promise<void>): Promise<void> {
+        await new Promise(resolve => {
+            this.asyncLocalStorage.run(
+                {
+                    defaultTransaction: this.createTransaction(),
+                },
+                async () => {
+                    await next()
 
-    reset(): void {
-        if (this.dbContext != null) {
-            this.dbContext.defaultTransaction = this.createTransaction()
-        }
+                    resolve(true)
+                },
+            )
+        })
     }
 
     private get dbContext(): DbContext | null {
@@ -47,7 +49,7 @@ export class DbContextService {
 
     private createTransaction(): DbTransaction {
         const queryRunner = this.dataSource.createQueryRunner()
-        const reset = () => this.reset()
+        const logService = this.logService
 
         return {
             queryRunner,
@@ -55,12 +57,28 @@ export class DbContextService {
                 await queryRunner.startTransaction()
             },
             async commit() {
-                await queryRunner.commitTransaction()
-                reset()
+                try {
+                    await queryRunner.commitTransaction()
+                } catch (error) {
+                    logService.error(
+                        `Database error - [${error?.response?.status}] ${error.message}`,
+                        DbContextService.name,
+                    )
+                } finally {
+                    await queryRunner.release()
+                }
             },
             async rollback() {
-                await queryRunner.rollbackTransaction()
-                reset()
+                try {
+                    await queryRunner.rollbackTransaction()
+                } catch (error) {
+                    logService.error(
+                        `Database error - [${error?.response?.status}] ${error.message}`,
+                        DbContextService.name,
+                    )
+                } finally {
+                    await queryRunner.release()
+                }
             },
         }
     }
