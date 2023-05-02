@@ -4,6 +4,7 @@ import {
     EntityManager,
     FindManyOptions,
     FindOneOptions,
+    ObjectId,
     ObjectLiteral,
     Repository,
 } from 'typeorm'
@@ -45,6 +46,19 @@ export class BaseRepository<TEntity extends ObjectLiteral> {
         )
 
         return result.generatedMaps[0] as TEntity
+    }
+
+    async update(
+        criteria: string | string[] | number | number[] | Date | Date[] | ObjectId | ObjectId[],
+        partialEntity: QueryDeepPartialEntity<TEntity>,
+    ): Promise<TEntity[]> {
+        const result = await this.activateContext(
+            entityManager =>
+                entityManager.update(this.repository.target, criteria, partialEntity),
+            () => this.repository.update(criteria, partialEntity),
+        )
+
+        return result.generatedMaps as TEntity[]
     }
 
     async upsert(
