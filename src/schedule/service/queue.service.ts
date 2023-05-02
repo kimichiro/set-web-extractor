@@ -2,7 +2,7 @@ import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { Queue } from 'bull'
 import { LogService } from '../../core/log/service/log.service'
-import { SetApiLoadProcessorDto } from './set-api-load.processor.dto'
+import { SetApiProcessorDto } from './set-api.processor.dto'
 import { QueueServiceDto as Dto } from './queue.service.dto'
 import { ConfigProviderService } from '../../core/config/service/config-provider.service'
 import { ConfigProviderServiceDto } from '../../core/config/service/config-provider.service.dto'
@@ -12,8 +12,8 @@ export class QueueService {
     constructor(
         private readonly logService: LogService,
         private readonly configProviderService: ConfigProviderService,
-        @InjectQueue(SetApiLoadProcessorDto.Name)
-        private setApiLoadQueue: Queue<SetApiLoadProcessorDto.ProcessMessage.Params>,
+        @InjectQueue(SetApiProcessorDto.Name)
+        private setApiQueue: Queue<SetApiProcessorDto.ProcessMessage.Params>,
     ) {}
 
     async pushMessage(
@@ -24,7 +24,9 @@ export class QueueService {
         switch (type) {
             case Dto.MessageType.SetApiLoadListSymbol:
             case Dto.MessageType.SetApiLoadFetchSymbolData:
-                return await this.pushSetApiLoadQueue(type, data)
+            case Dto.MessageType.SetApiExtractUpsertSymbolList:
+            case Dto.MessageType.SetApiExtractUpdateSymbol:
+                return await this.pushSetApiQueue(type, data)
             default: {
                 this.logService.info('Queue name not supported')
                 return null
@@ -32,11 +34,11 @@ export class QueueService {
         }
     }
 
-    private async pushSetApiLoadQueue(
+    private async pushSetApiQueue(
         type: Dto.MessageType,
         data?: object,
     ): Promise<Dto.PushMessage.Result> {
-        const job = await this.setApiLoadQueue.add(
+        const job = await this.setApiQueue.add(
             { type, data },
             {
                 delay: this.configProviderService.getNumber(

@@ -1,7 +1,7 @@
 import { QueueServiceDto } from './queue.service.dto'
 
-export namespace SetApiLoadProcessorDto {
-    export const Name = 'set-api-load'
+export namespace SetApiProcessorDto {
+    export const Name = 'set-api'
 
     export namespace ProcessMessage {
         export interface Params {

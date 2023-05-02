@@ -7,10 +7,11 @@ import { ConfigProviderServiceDto } from '../core/config/service/config-provider
 import { DatabaseModule } from '../database/database.module'
 import { EtlModule } from '../etl/etl.module'
 import { CronJobService } from './service/cron-job.service'
+import { SetApiProcessor } from './service/set-api.processor'
+import { SetApiProcessorDto } from './service/set-api.processor.dto'
 import { SetApiLoadService } from './service/set-api-load.service'
+import { SetApiExtractService } from './service/set-api-extract.service'
 import { QueueService } from './service/queue.service'
-import { SetApiLoadProcessor } from './service/set-api-load.processor'
-import { SetApiLoadProcessorDto } from './service/set-api-load.processor.dto'
 
 @Module({
     imports: [
@@ -19,7 +20,7 @@ import { SetApiLoadProcessorDto } from './service/set-api-load.processor.dto'
         EtlModule,
         NestScheduleModule.forRoot(),
         BullModule.registerQueue({
-            name: SetApiLoadProcessorDto.Name,
+            name: SetApiProcessorDto.Name,
         }),
         BullModule.forRootAsync({
             imports: [CoreModule],
@@ -62,7 +63,8 @@ import { SetApiLoadProcessorDto } from './service/set-api-load.processor.dto'
     ],
     providers: [
         SetApiLoadService,
-        SetApiLoadProcessor,
+        SetApiExtractService,
+        SetApiProcessor,
         QueueService,
         CronJobService,
     ],

@@ -2,15 +2,18 @@ import { Process, Processor } from '@nestjs/bull'
 import { Job } from 'bull'
 import { LogService } from '../../core/log/service/log.service'
 import { QueueServiceDto } from './queue.service.dto'
-import { SetApiLoadProcessorDto as Dto } from './set-api-load.processor.dto'
+import { SetApiProcessorDto as Dto } from './set-api.processor.dto'
+import { SetApiExtractService } from './set-api-extract.service'
+import { SetApiExtractServiceDto } from './set-api-extract.service.dto'
 import { SetApiLoadService } from './set-api-load.service'
 import { SetApiLoadServiceDto } from './set-api-load.service.dto'
 
 @Processor(Dto.Name)
-export class SetApiLoadProcessor {
+export class SetApiProcessor {
     constructor(
         private readonly logService: LogService,
         private readonly setApiLoadService: SetApiLoadService,
+        private readonly setApiExtractService: SetApiExtractService,
     ) {}
 
     @Process()
@@ -22,7 +25,7 @@ export class SetApiLoadProcessor {
         try {
             this.logService.info(
                 `Job:${job.id} ${type} begin`,
-                SetApiLoadProcessor.name,
+                SetApiProcessor.name,
             )
 
             switch (type) {
@@ -36,16 +39,27 @@ export class SetApiLoadProcessor {
                     await this.setApiLoadService.fetchSymbolData(params)
                     break
                 }
+                case QueueServiceDto.MessageType
+                    .SetApiExtractUpsertSymbolList: {
+                    await this.setApiExtractService.upsertSymbolList()
+                    break
+                }
+                case QueueServiceDto.MessageType.SetApiExtractUpdateSymbol: {
+                    const params =
+                        data as SetApiExtractServiceDto.UpdateSymbol.Params
+                    await this.setApiExtractService.updateSymbol(params)
+                    break
+                }
             }
 
             this.logService.info(
                 `Job:${job.id} ${type} success`,
-                SetApiLoadProcessor.name,
+                SetApiProcessor.name,
             )
         } catch (error) {
             this.logService.error(
                 `Job:${job.id} ${type} error - [${error?.response?.status}] ${error.message}`,
-                SetApiLoadProcessor.name,
+                SetApiProcessor.name,
             )
         }
     }

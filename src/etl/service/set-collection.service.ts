@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common'
+import { SetApiRawDataType } from '../../database/entity/enum.entity'
 import { SetApiRawDataRepository } from '../../database/repository/set-api-raw-data.repository'
+import { DbContextService } from '../../database/service/db-context.service'
 import { SetCollectionServiceDto as Dto } from './set-collection.service.dto'
 import { SetHttpService } from './set-http.service'
-import { SetApiRawDataType } from '../../database/entity/enum.entity'
+import { SetHttpServiceDto } from './set-http.service.dto'
 
 @Injectable()
 export class SetCollectionService {
     constructor(
+        private readonly dbContextService: DbContextService,
         private readonly setHttpService: SetHttpService,
         private readonly setApiRawDataRepository: SetApiRawDataRepository,
     ) {}
@@ -55,12 +58,23 @@ export class SetCollectionService {
     async loadSymbolList(): Promise<Dto.LoadSymbolList.Result> {
         const language = 'en'
 
-        await this.setHttpService.productStockSearch({ language })
+        let stockList: Dto.LoadSymbolList.Result
 
-        const stockList = await this.storeRawData(
-            () => this.setHttpService.stockList({ language }),
-            SetApiRawDataType.SetStockList,
-        )
+        await this.dbContextService.run(async () => {
+            const defaultTransaction =
+                this.dbContextService.getDefaultTransaction()
+
+            await defaultTransaction.begin()
+
+            await this.setHttpService.productStockSearch({ language })
+
+            stockList = await this.storeRawData(
+                () => this.setHttpService.stockList({ language }),
+                SetApiRawDataType.SetStockList,
+            )
+
+            await defaultTransaction.commit()
+        })
 
         return stockList
     }
@@ -72,166 +86,179 @@ export class SetCollectionService {
 
         const language = 'en'
 
-        await this.setHttpService.productStockSymbolPrice({
-            language,
-            stockQuote,
+        let result: SetHttpServiceDto.FactsheetSymbolProfile.Result
+
+        await this.dbContextService.run(async () => {
+            const defaultTransaction =
+                this.dbContextService.getDefaultTransaction()
+
+            await defaultTransaction.begin()
+
+            await this.setHttpService.productStockSymbolPrice({
+                language,
+                stockQuote,
+            })
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.stockSymbolRelatedProductOthers({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetStockSymbolRelatedProductO,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.stockSymbolRelatedProductWarrants({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetStockSymbolRelatedProductW,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.stockSymbolIndexList({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetStockSymbolIndexList,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.stockSymbolCompanyHighlightFinancial({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetStockSymbolCompanyHighlightFinancialData,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.stockSymbolCompanyHighlightFinancial({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetStockSymbolCompanyHighlightFinancialData,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.stockSymbolProfile({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetStockSymbolProfile,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.companySymbolProfile({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetCompanySymbolProfile,
+            )
+
+            await this.setHttpService.productStockSymbolFactsheet({
+                language,
+                stockQuote,
+            })
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.stockSymbolCorporateActionHistorical({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetStockSymbolCorporateActionHistorical,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.factsheetSymbolPricePerformance({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetFactsheetSymbolPricePerformance,
+            )
+
+            result = await this.storeRawData(
+                () =>
+                    this.setHttpService.factsheetSymbolProfile({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetFactsheetSymbolProfile,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.factsheetSymbolTradingStat({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetFactsheetSymbolTradingStat,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.factsheetSymbolFinancialStatementBalanceSheet(
+                        { language, stockQuote },
+                    ),
+                SetApiRawDataType.SetFactsheetSymbolFinancialStatementBalanceSheet,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.factsheetSymbolFinancialStatementIncomeStatement(
+                        { language, stockQuote },
+                    ),
+                SetApiRawDataType.SetFactsheetSymbolFinancialStatementIncomeStatement,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.factsheetSymbolFinancialStatementCashFlow(
+                        {
+                            language,
+                            stockQuote,
+                        },
+                    ),
+                SetApiRawDataType.SetFactsheetSymbolFinancialStatementCashFlow,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.factsheetSymbolFinancialRatio({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetFactsheetSymbolFinancialRatio,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.factsheetSymbolFinancialGrowth({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetFactsheetSymbolFinancialGrowth,
+            )
+
+            await this.storeRawData(
+                () =>
+                    this.setHttpService.factsheetSymbolCapitalMovement({
+                        language,
+                        stockQuote,
+                    }),
+                SetApiRawDataType.SetFactsheetSymbolCapitalMovement,
+            )
+
+            await defaultTransaction.commit()
         })
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.stockSymbolRelatedProductOthers({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetStockSymbolRelatedProductO,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.stockSymbolRelatedProductWarrants({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetStockSymbolRelatedProductW,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.stockSymbolIndexList({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetStockSymbolIndexList,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.stockSymbolCompanyHighlightFinancial({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetStockSymbolCompanyHighlightFinancialData,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.stockSymbolCompanyHighlightFinancial({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetStockSymbolCompanyHighlightFinancialData,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.stockSymbolProfile({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetStockSymbolProfile,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.companySymbolProfile({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetCompanySymbolProfile,
-        )
-
-        await this.setHttpService.productStockSymbolFactsheet({
-            language,
-            stockQuote,
-        })
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.stockSymbolCorporateActionHistorical({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetStockSymbolCorporateActionHistorical,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.factsheetSymbolPricePerformance({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetFactsheetSymbolPricePerformance,
-        )
-
-        const result = await this.storeRawData(
-            () =>
-                this.setHttpService.factsheetSymbolProfile({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetFactsheetSymbolProfile,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.factsheetSymbolTradingStat({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetFactsheetSymbolTradingStat,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.factsheetSymbolFinancialStatementBalanceSheet(
-                    { language, stockQuote },
-                ),
-            SetApiRawDataType.SetFactsheetSymbolFinancialStatementBalanceSheet,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.factsheetSymbolFinancialStatementIncomeStatement(
-                    { language, stockQuote },
-                ),
-            SetApiRawDataType.SetFactsheetSymbolFinancialStatementIncomeStatement,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.factsheetSymbolFinancialStatementCashFlow({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetFactsheetSymbolFinancialStatementCashFlow,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.factsheetSymbolFinancialRatio({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetFactsheetSymbolFinancialRatio,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.factsheetSymbolFinancialGrowth({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetFactsheetSymbolFinancialGrowth,
-        )
-
-        await this.storeRawData(
-            () =>
-                this.setHttpService.factsheetSymbolCapitalMovement({
-                    language,
-                    stockQuote,
-                }),
-            SetApiRawDataType.SetFactsheetSymbolCapitalMovement,
-        )
 
         return {
             symbol: result.symbol.toUpperCase(),

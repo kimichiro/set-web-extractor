@@ -11,6 +11,7 @@ import { DbContextInterceptor } from './interceptor/db-context.interceptor'
 import { DbContextMiddleware } from './middleware/db-context.middleware'
 import { SetApiRawDataRepository } from './repository/set-api-raw-data.repository'
 import { DbContextService } from './service/db-context.service'
+import { SymbolRepository } from './repository/symbol.repository'
 
 @Module({
     imports: [
@@ -54,8 +55,9 @@ import { DbContextService } from './service/db-context.service'
             useClass: DbContextInterceptor,
         },
         SetApiRawDataRepository,
+        SymbolRepository,
     ],
-    exports: [DbContextService, SetApiRawDataRepository],
+    exports: [DbContextService, SetApiRawDataRepository, SymbolRepository],
 })
 export class DatabaseModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {

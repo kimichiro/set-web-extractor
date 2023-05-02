@@ -24,7 +24,7 @@ export class DbContextService {
     ) {}
 
     getDefaultTransaction(): DbTransaction | null {
-        return this.dbContext.defaultTransaction
+        return this.dbContext?.defaultTransaction ?? null
     }
 
     async run(next: () => void | Promise<void>): Promise<void> {
