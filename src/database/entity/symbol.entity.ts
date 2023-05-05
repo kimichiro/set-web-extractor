@@ -30,4 +30,7 @@ export class SymbolEntity extends BaseEntity {
 
     @Column({ type: 'jsonb', nullable: true })
     indices: string[]
+
+    @Column({ type: 'jsonb', nullable: true })
+    relatedProducts: string[]
 }

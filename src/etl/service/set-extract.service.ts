@@ -67,6 +67,7 @@ export class SetExtractService {
                     partialEntities,
                     {
                         conflictPaths: {
+                            market: true,
                             symbol: true,
                         },
                     },
@@ -96,37 +97,92 @@ export class SetExtractService {
 
             await defaultTransaction.begin()
 
+            const setApiRawDataIds: number[] = []
+
             symbolEntity = await this.symbolRepository.findOne({
                 where: {
                     symbol,
                 },
             })
+            if (symbolEntity != null) {
+                const setStockSymbolIndexListResult = await this.setApiRawDataRepository.find({
+                    where: {
+                        type: SetApiRawDataType.SetStockSymbolIndexList,
+                        data: JsonContains({ symbol }),
+                        isExtracted: false,
+                    },
+                    order: {
+                        createdAt: 'DESC',
+                    },
+                })
+                if (setStockSymbolIndexListResult.length > 0) {
+                    const [rawData] = setStockSymbolIndexListResult
+                    const setStockIndexList =
+                        rawData.data as SetHttpServiceDto.StockSymbolIndexList.Result
 
-            const setStockSymbolIndexListResult = await this.setApiRawDataRepository.find({
-                where: {
-                    type: SetApiRawDataType.SetStockSymbolIndexList,
-                    data: JsonContains({ symbol }),
-                    isExtracted: false,
-                },
-                order: {
-                    createdAt: 'DESC',
-                },
-            })
-            if (setStockSymbolIndexListResult.length > 0) {
-                const [rawData] = setStockSymbolIndexListResult
-                const setStockIndexList =
-                    rawData.data as SetHttpServiceDto.StockSymbolIndexList.Result
+                    const indices = setStockIndexList.otherIndices.map(index => index.toUpperCase())
 
-                const indices = setStockIndexList.otherIndices.map(index => index.toUpperCase())
+                    await this.symbolRepository.update(symbolEntity.id, {
+                        indices,
+                    })
+
+                    setStockSymbolIndexListResult.forEach(({ id }) => setApiRawDataIds.push(id))
+                }
+
+                const setStockSymbolRelatedProductOResult = await this.setApiRawDataRepository.find({
+                    where: {
+                        type: SetApiRawDataType.SetStockSymbolRelatedProductO,
+                        data: JsonContains({ symbol }),
+                        isExtracted: false,
+                    },
+                    order: {
+                        createdAt: 'DESC',
+                    },
+                })
+                const setStockSymbolRelatedProductWResult = await this.setApiRawDataRepository.find({
+                    where: {
+                        type: SetApiRawDataType.SetStockSymbolRelatedProductW,
+                        data: JsonContains({ symbol }),
+                        isExtracted: false,
+                    },
+                    order: {
+                        createdAt: 'DESC',
+                    },
+                })
+                let relatedProducts: string[] = []
+                if (setStockSymbolRelatedProductOResult.length > 0) {
+                    const [rawData] = setStockSymbolRelatedProductOResult
+                    const setStockSymbolRelatedProductO =
+                        rawData.data as SetHttpServiceDto.StockSymbolRelatedProductOthers.Result
+
+                    relatedProducts = setStockSymbolRelatedProductO.relatedProducts.reduce(
+                        (acc, p) => [...acc, p.symbol],
+                        relatedProducts
+                    )
+                }
+                if (setStockSymbolRelatedProductWResult.length > 0) {
+                    const [rawData] = setStockSymbolRelatedProductWResult
+                    const setStockSymbolRelatedProductW =
+                        rawData.data as SetHttpServiceDto.StockSymbolRelatedProductWarrants.Result
+
+                    relatedProducts = setStockSymbolRelatedProductW.relatedProducts.reduce(
+                        (acc, p) => [...acc, p.symbol],
+                        relatedProducts
+                    )
+                }
+                relatedProducts = relatedProducts.filter(s => s !== symbol)
 
                 await this.symbolRepository.update(symbolEntity.id, {
-                    indices,
+                    relatedProducts,
                 })
 
-                await this.setApiRawDataRepository.update(setStockSymbolIndexListResult.map(({ id }) => id), {
-                    isExtracted: true,
-                })
+                setStockSymbolRelatedProductOResult.forEach(({ id }) => setApiRawDataIds.push(id))
+                setStockSymbolRelatedProductWResult.forEach(({ id }) => setApiRawDataIds.push(id))
             }
+
+            await this.setApiRawDataRepository.update(setApiRawDataIds, {
+                isExtracted: true,
+            })
 
             await defaultTransaction.commit()
         })

@@ -28,7 +28,7 @@ export class BaseRepository<TEntity extends ObjectLiteral> {
         return result
     }
 
-    async findOne(options?: FindOneOptions<TEntity>): Promise<TEntity> {
+    async findOne(options?: FindOneOptions<TEntity>): Promise<TEntity | null> {
         const result = await this.activateContext(
             entityManager =>
                 entityManager.findOne(this.repository.target, options),
@@ -52,6 +52,10 @@ export class BaseRepository<TEntity extends ObjectLiteral> {
         criteria: string | string[] | number | number[] | Date | Date[] | ObjectId | ObjectId[],
         partialEntity: QueryDeepPartialEntity<TEntity>,
     ): Promise<TEntity[]> {
+        if (Array.isArray(criteria) && criteria.length === 0) {
+            return []
+        }
+
         const result = await this.activateContext(
             entityManager =>
                 entityManager.update(this.repository.target, criteria, partialEntity),
