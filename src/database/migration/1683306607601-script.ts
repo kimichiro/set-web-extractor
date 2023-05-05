@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Script1683010539170 implements MigrationInterface {
-    name = 'Script1683010539170'
+export class Script1683306607601 implements MigrationInterface {
+    name = 'Script1683306607601'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -10,15 +10,15 @@ export class Script1683010539170 implements MigrationInterface {
                 "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
                 "deleted_at" TIMESTAMP WITH TIME ZONE,
                 "id" BIGSERIAL NOT NULL,
+                "market" text NOT NULL,
                 "symbol" text NOT NULL,
                 "security_type" text NOT NULL,
                 "name_th" text NOT NULL,
                 "name_en" text NOT NULL,
-                "market" text NOT NULL,
                 "industry" text NOT NULL,
                 "sector" text NOT NULL,
                 "indices" jsonb,
-                CONSTRAINT "UQ_6ff45711b8039a68a3f43dcb7a8" UNIQUE ("symbol"),
+                CONSTRAINT "UQ_ffe436e1120c1fd86ef22310c83" UNIQUE ("market", "symbol"),
                 CONSTRAINT "PK_d1373cd631624b100a81a545dee" PRIMARY KEY ("id")
             )
         `);
