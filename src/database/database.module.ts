@@ -12,6 +12,7 @@ import { DbContextMiddleware } from './middleware/db-context.middleware'
 import { SetApiRawDataRepository } from './repository/set-api-raw-data.repository'
 import { DbContextService } from './service/db-context.service'
 import { SymbolRepository } from './repository/symbol.repository'
+import { FinancialStatementRepository } from './repository/financial-statement.repository'
 
 @Module({
     imports: [
@@ -56,8 +57,14 @@ import { SymbolRepository } from './repository/symbol.repository'
         },
         SetApiRawDataRepository,
         SymbolRepository,
+        FinancialStatementRepository,
     ],
-    exports: [DbContextService, SetApiRawDataRepository, SymbolRepository],
+    exports: [
+        DbContextService,
+        SetApiRawDataRepository,
+        SymbolRepository,
+        FinancialStatementRepository,
+    ],
 })
 export class DatabaseModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {

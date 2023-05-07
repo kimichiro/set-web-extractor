@@ -137,15 +137,6 @@ export class SetCollectionService {
 
             await this.storeRawData(
                 () =>
-                    this.setHttpService.stockSymbolCompanyHighlightFinancial({
-                        language,
-                        stockQuote,
-                    }),
-                SetApiRawDataType.SetStockSymbolCompanyHighlightFinancialData,
-            )
-
-            await this.storeRawData(
-                () =>
                     this.setHttpService.stockSymbolProfile({
                         language,
                         stockQuote,

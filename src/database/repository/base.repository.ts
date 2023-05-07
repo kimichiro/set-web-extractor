@@ -49,7 +49,15 @@ export class BaseRepository<TEntity extends ObjectLiteral> {
     }
 
     async update(
-        criteria: string | string[] | number | number[] | Date | Date[] | ObjectId | ObjectId[],
+        criteria:
+            | string
+            | string[]
+            | number
+            | number[]
+            | Date
+            | Date[]
+            | ObjectId
+            | ObjectId[],
         partialEntity: QueryDeepPartialEntity<TEntity>,
     ): Promise<TEntity[]> {
         if (Array.isArray(criteria) && criteria.length === 0) {
@@ -58,7 +66,11 @@ export class BaseRepository<TEntity extends ObjectLiteral> {
 
         const result = await this.activateContext(
             entityManager =>
-                entityManager.update(this.repository.target, criteria, partialEntity),
+                entityManager.update(
+                    this.repository.target,
+                    criteria,
+                    partialEntity,
+                ),
             () => this.repository.update(criteria, partialEntity),
         )
 

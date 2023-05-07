@@ -12,4 +12,12 @@ export namespace SetExtractServiceDto {
 
         export type Result = SymbolEntity
     }
+
+    export namespace UpsertFinancialStatement {
+        export interface Params {
+            symbol: string
+        }
+
+        export type Result = SymbolEntity
+    }
 }

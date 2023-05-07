@@ -16,4 +16,22 @@ export namespace JobControllerDto {
             jobId: string
         }
     }
+
+    export namespace HttpPostQueue {
+        export enum Param {
+            Queue = 'queue',
+            Action = 'action',
+        }
+
+        export const Endpoint = `queue/:${Param.Queue}/:${Param.Action}`
+        export const StatusCode = HttpStatusCode.Accepted
+
+        export interface RequestBody {
+            data?: object
+        }
+
+        export interface Response {
+            jobId: string
+        }
+    }
 }

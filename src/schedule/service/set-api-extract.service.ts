@@ -21,6 +21,11 @@ export class SetApiExtractService {
                     type: QueueServiceDto.MessageType.SetApiExtractUpdateSymbol,
                     data: { symbol },
                 })
+                this.queueService.pushMessage({
+                    type: QueueServiceDto.MessageType
+                        .SetApiExtractUpsertFinancialStatement,
+                    data: { symbol },
+                })
             })
     }
 
@@ -30,5 +35,13 @@ export class SetApiExtractService {
         const { symbol } = params
 
         await this.setExtractService.updateSymbol({ symbol })
+    }
+
+    async upsertFinancialStatement(
+        params: Dto.UpsertFinancialStatement.Params,
+    ): Promise<Dto.UpsertFinancialStatement.Result> {
+        const { symbol } = params
+
+        await this.setExtractService.upsertFinancialStatement({ symbol })
     }
 }

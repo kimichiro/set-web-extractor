@@ -10,4 +10,12 @@ export namespace SetApiExtractServiceDto {
 
         export type Result = void
     }
+
+    export namespace UpsertFinancialStatement {
+        export interface Params {
+            symbol: string
+        }
+
+        export type Result = void
+    }
 }

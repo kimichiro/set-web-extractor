@@ -1,9 +1,11 @@
 import {
+    Body,
     Controller,
     Get,
     HttpCode,
-    Param,
     NotFoundException,
+    Param,
+    Post,
 } from '@nestjs/common'
 import { QueueService } from '../../schedule/service/queue.service'
 import { QueueServiceDto } from '../../schedule/service/queue.service.dto'
@@ -28,6 +30,36 @@ export class JobController {
 
         const jobId = await this.queueService.pushMessage({
             type,
+        })
+
+        if (jobId == null) {
+            throw new NotFoundException('Unknown queue')
+        }
+
+        return {
+            jobId: jobId.toString(),
+        }
+    }
+
+    @Post(Dto.HttpPostQueue.Endpoint)
+    @HttpCode(Dto.HttpPostQueue.StatusCode)
+    async httpPostQueue(
+        @Param(Dto.HttpPostQueue.Param.Queue) queue: string,
+        @Param(Dto.HttpPostQueue.Param.Action) action: string,
+        @Body() requestBody: Dto.HttpPostQueue.RequestBody,
+    ): Promise<Dto.HttpPostQueue.Response> {
+        const { data } = requestBody
+
+        const type = Object.values(QueueServiceDto.MessageType).find(
+            value => value === `${queue}.${action}`,
+        )
+        if (type == null) {
+            throw new NotFoundException('Unsupported message type')
+        }
+
+        const jobId = await this.queueService.pushMessage({
+            type,
+            data,
         })
 
         if (jobId == null) {

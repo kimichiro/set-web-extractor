@@ -36,6 +36,7 @@ export class SetApiProcessor {
                 case QueueServiceDto.MessageType.SetApiLoadFetchSymbolData: {
                     const params =
                         data as SetApiLoadServiceDto.FetchSymbolData.Params
+
                     await this.setApiLoadService.fetchSymbolData(params)
                     break
                 }
@@ -47,7 +48,18 @@ export class SetApiProcessor {
                 case QueueServiceDto.MessageType.SetApiExtractUpdateSymbol: {
                     const params =
                         data as SetApiExtractServiceDto.UpdateSymbol.Params
+
                     await this.setApiExtractService.updateSymbol(params)
+                    break
+                }
+                case QueueServiceDto.MessageType
+                    .SetApiExtractUpsertFinancialStatement: {
+                    const params =
+                        data as SetApiExtractServiceDto.UpsertFinancialStatement.Params
+
+                    await this.setApiExtractService.upsertFinancialStatement(
+                        params,
+                    )
                     break
                 }
             }
