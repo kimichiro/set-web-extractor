@@ -7,6 +7,8 @@ import { SetApiExtractService } from './set-api-extract.service'
 import { SetApiExtractServiceDto } from './set-api-extract.service.dto'
 import { SetApiLoadService } from './set-api-load.service'
 import { SetApiLoadServiceDto } from './set-api-load.service.dto'
+import { SetApiTransformService } from './set-api-transform.service'
+import { SetApiTransformServiceDto } from './set-api-transform.service.dto'
 
 @Processor(Dto.Name)
 export class SetApiProcessor {
@@ -14,6 +16,7 @@ export class SetApiProcessor {
         private readonly logService: LogService,
         private readonly setApiLoadService: SetApiLoadService,
         private readonly setApiExtractService: SetApiExtractService,
+        private readonly setApiTransformService: SetApiTransformService,
     ) {}
 
     @Process()
@@ -53,13 +56,34 @@ export class SetApiProcessor {
                     break
                 }
                 case QueueServiceDto.MessageType
-                    .SetApiExtractUpsertFinancialStatement: {
+                    .SetApiExtractInsertFinancialStatement: {
                     const params =
-                        data as SetApiExtractServiceDto.UpsertFinancialStatement.Params
+                        data as SetApiExtractServiceDto.InsertFinancialStatement.Params
 
-                    await this.setApiExtractService.upsertFinancialStatement(
+                    await this.setApiExtractService.insertFinancialStatement(
                         params,
                     )
+                    break
+                }
+                case QueueServiceDto.MessageType
+                    .SetApiExtractInsertTradingStat: {
+                    const params =
+                        data as SetApiExtractServiceDto.InsertTradingStat.Params
+
+                    await this.setApiExtractService.insertTradingStat(params)
+                    break
+                }
+                case QueueServiceDto.MessageType
+                    .SetApiTransformEnqueueSymbolList: {
+                    await this.setApiTransformService.enqueueSymbolList()
+                    break
+                }
+                case QueueServiceDto.MessageType
+                    .SetApiTransformUpsertBasicInfo: {
+                    const params =
+                        data as SetApiTransformServiceDto.UpsertBasicInfo.Params
+
+                    await this.setApiTransformService.upsertBasicInfo(params)
                     break
                 }
             }

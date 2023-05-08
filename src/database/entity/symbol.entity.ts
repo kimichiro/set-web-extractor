@@ -7,6 +7,8 @@ import {
 } from 'typeorm'
 import { BaseEntity } from './base.entity'
 import { FinancialStatementEntity } from './financial-statement.entity'
+import { TradingStatEntity } from './trading-stat.entity'
+import { FinancialRatioEntity } from './financial-ratio.entity'
 
 @Entity({ name: 'symbol' })
 @Unique(['market', 'symbol'])
@@ -46,4 +48,13 @@ export class SymbolEntity extends BaseEntity {
         financialStatement => financialStatement.symbol,
     )
     financialStatements: FinancialStatementEntity[]
+
+    @OneToMany(
+        () => FinancialRatioEntity,
+        financialRatio => financialRatio.symbol,
+    )
+    financialRatios: FinancialRatioEntity[]
+
+    @OneToMany(() => TradingStatEntity, tradingStat => tradingStat.symbol)
+    tradingStats: TradingStatEntity[]
 }

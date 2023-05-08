@@ -129,4 +129,30 @@ export class SetApiRawDataRepository extends BaseRepository<SetApiRawDataEntity>
             },
         })
     }
+
+    async getFinancialRatio(symbol: string): Promise<SetApiRawDataEntity[]> {
+        return await this.find({
+            where: {
+                type: SetApiRawDataType.SetFactsheetSymbolFinancialRatio,
+                data: Raw(alias => `${alias} @> '[{"symbol":"${symbol}"}]'`),
+                isExtracted: false,
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+        })
+    }
+
+    async getTradingStat(symbol: string): Promise<SetApiRawDataEntity[]> {
+        return await this.find({
+            where: {
+                type: SetApiRawDataType.SetFactsheetSymbolTradingStat,
+                data: Raw(alias => `${alias} @> '[{"symbol":"${symbol}"}]'`),
+                isExtracted: false,
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+        })
+    }
 }

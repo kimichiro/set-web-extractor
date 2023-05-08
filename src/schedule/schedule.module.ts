@@ -12,6 +12,7 @@ import { SetApiProcessorDto } from './service/set-api.processor.dto'
 import { SetApiLoadService } from './service/set-api-load.service'
 import { SetApiExtractService } from './service/set-api-extract.service'
 import { QueueService } from './service/queue.service'
+import { SetApiTransformService } from './service/set-api-transform.service'
 
 @Module({
     imports: [
@@ -64,6 +65,7 @@ import { QueueService } from './service/queue.service'
     providers: [
         SetApiLoadService,
         SetApiExtractService,
+        SetApiTransformService,
         SetApiProcessor,
         QueueService,
         CronJobService,

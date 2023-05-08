@@ -13,6 +13,8 @@ import { SetApiRawDataRepository } from './repository/set-api-raw-data.repositor
 import { DbContextService } from './service/db-context.service'
 import { SymbolRepository } from './repository/symbol.repository'
 import { FinancialStatementRepository } from './repository/financial-statement.repository'
+import { TradingStatRepository } from './repository/trading-stat.repository'
+import { FinancialRatioRepository } from './repository/financial-ratio.repository'
 
 @Module({
     imports: [
@@ -38,7 +40,7 @@ import { FinancialStatementRepository } from './repository/financial-statement.r
                     ConfigProviderServiceDto.ConfigKey.PostgresDb,
                 ),
                 synchronize: false,
-                logging: false,
+                logging: configProviderService.isDebug(),
                 entities: [...entities],
                 namingStrategy: new SnakeNamingStrategy(),
                 ssl: configProviderService.isProduction(),
@@ -58,12 +60,16 @@ import { FinancialStatementRepository } from './repository/financial-statement.r
         SetApiRawDataRepository,
         SymbolRepository,
         FinancialStatementRepository,
+        FinancialRatioRepository,
+        TradingStatRepository,
     ],
     exports: [
         DbContextService,
         SetApiRawDataRepository,
         SymbolRepository,
         FinancialStatementRepository,
+        FinancialRatioRepository,
+        TradingStatRepository,
     ],
 })
 export class DatabaseModule implements NestModule {

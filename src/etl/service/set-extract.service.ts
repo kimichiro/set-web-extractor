@@ -6,6 +6,11 @@ import { SymbolRepository } from '../../database/repository/symbol.repository'
 import { DbContextService } from '../../database/service/db-context.service'
 import { SetExtractServiceDto as Dto } from './set-extract.service.dto'
 import { SetHttpServiceDto } from './set-http.service.dto'
+import { FinancialStatementEntity } from '../../database/entity/financial-statement.entity'
+import { FinancialRatioEntity } from '../../database/entity/financial-ratio.entity'
+import { TradingStatRepository } from '../../database/repository/trading-stat.repository'
+import { TradingStatEntity } from '../../database/entity/trading-stat.entity'
+import { FinancialRatioRepository } from '../../database/repository/financial-ratio.repository'
 
 @Injectable()
 export class SetExtractService {
@@ -14,6 +19,8 @@ export class SetExtractService {
         private readonly setApiRawDataRepository: SetApiRawDataRepository,
         private readonly symbolRepository: SymbolRepository,
         private readonly financialStatementRepository: FinancialStatementRepository,
+        private readonly financialRatioRepository: FinancialRatioRepository,
+        private readonly tradingStatRepository: TradingStatRepository,
     ) {}
 
     async upsertSymbolList(): Promise<Dto.UpsertSymbolList.Result> {
@@ -145,9 +152,9 @@ export class SetExtractService {
         return symbolEntity
     }
 
-    async upsertFinancialStatement(
-        params: Dto.UpsertFinancialStatement.Params,
-    ): Promise<Dto.UpsertFinancialStatement.Result> {
+    async insertFinancialStatement(
+        params: Dto.InsertFinancialStatement.Params,
+    ): Promise<Dto.InsertFinancialStatement.Result> {
         const { symbol } = params
 
         let symbolEntity: SymbolEntity
@@ -173,7 +180,8 @@ export class SetExtractService {
                         symbol,
                     )
 
-                let partialEntities = []
+                let partialEntities: Array<Partial<FinancialStatementEntity>> =
+                    []
                 if (financialStatementBalanceSheetResult.length > 0) {
                     const [rawData] = financialStatementBalanceSheetResult
                     const balanceSheets =
@@ -277,13 +285,124 @@ export class SetExtractService {
                     ),
                 )
 
+                const financialRatioResult =
+                    await this.setApiRawDataRepository.getFinancialRatio(symbol)
+                if (financialRatioResult.length > 0) {
+                    const [rawData] = financialRatioResult
+                    const financialRatios =
+                        rawData.data as SetHttpServiceDto.FactsheetSymbolFinancialRatio.Result
+
+                    const entities = financialRatios.reduce<
+                        Array<Partial<FinancialRatioEntity>>
+                    >(
+                        (entities, financialRatio) =>
+                            financialRatio.data.reduce(
+                                (acc, account) => [
+                                    ...acc,
+                                    {
+                                        symbol: symbolEntity,
+                                        beginAt: new Date(
+                                            financialRatio.beginDate,
+                                        ),
+                                        endAt: new Date(financialRatio.endDate),
+                                        year: financialRatio.year,
+                                        accountName: account.accountName,
+                                        value: account.value,
+                                    },
+                                ],
+                                entities,
+                            ),
+                        [],
+                    )
+
+                    await Promise.all(
+                        entities.map(entity =>
+                            this.financialRatioRepository.insert(entity),
+                        ),
+                    )
+                }
+
                 const setApiRawDataIds = [
                     ...financialStatementBalanceSheetResult.map(({ id }) => id),
                     ...financialStatementIncomeStatementResult.map(
                         ({ id }) => id,
                     ),
                     ...financialStatementCashFlowResult.map(({ id }) => id),
+                    ...financialRatioResult.map(({ id }) => id),
                 ]
+                await this.setApiRawDataRepository.markExtracted(
+                    setApiRawDataIds,
+                )
+            }
+
+            await defaultTransaction.commit()
+        })
+
+        return symbolEntity
+    }
+
+    async insertTradingStat(
+        params: Dto.InsertTradingStat.Params,
+    ): Promise<Dto.InsertTradingStat.Result> {
+        const { symbol } = params
+
+        let symbolEntity: SymbolEntity
+
+        await this.dbContextService.run(async () => {
+            const defaultTransaction =
+                this.dbContextService.getDefaultTransaction()
+
+            await defaultTransaction.begin()
+
+            symbolEntity = await this.symbolRepository.getSymbol(symbol)
+            if (symbolEntity != null) {
+                const tradingStatResult =
+                    await this.setApiRawDataRepository.getTradingStat(symbol)
+
+                let partialEntities: Array<Partial<TradingStatEntity>> = []
+                if (tradingStatResult.length > 0) {
+                    const [rawData] = tradingStatResult
+                    let tradingStats =
+                        rawData.data as SetHttpServiceDto.FactsheetSymbolTradingStat.Result
+
+                    tradingStats = tradingStats.filter(
+                        tradingStat => !isNaN(parseInt(tradingStat.period, 10)),
+                    )
+                    partialEntities = tradingStats.reduce(
+                        (acc, tradingStat) => [
+                            ...acc,
+                            {
+                                symbol: symbolEntity,
+                                dataDate: new Date(tradingStat.date),
+                                financialDate: new Date(
+                                    tradingStat.financialDate,
+                                ),
+                                year: parseInt(tradingStat.period, 10),
+                                open: tradingStat.open,
+                                high: tradingStat.high,
+                                low: tradingStat.low,
+                                close: tradingStat.close,
+                                par: tradingStat.par,
+                                pe: tradingStat.pe,
+                                pbv: tradingStat.pbv,
+                                totalValue: tradingStat.totalValue,
+                                totalVolume: tradingStat.totalVolume,
+                                dividendPayoutRatio:
+                                    tradingStat.dividendPayoutRatio,
+                            },
+                        ],
+                        partialEntities,
+                    )
+                }
+
+                await Promise.all(
+                    partialEntities.map(entity =>
+                        this.tradingStatRepository.insert(entity),
+                    ),
+                )
+
+                const setApiRawDataIds = tradingStatResult.map(({ id }) => id)
+
                 await this.setApiRawDataRepository.markExtracted(
                     setApiRawDataIds,
                 )

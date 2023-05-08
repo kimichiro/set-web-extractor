@@ -10,4 +10,10 @@ export namespace CronJobServiceDto {
 
         export type Result = void
     }
+
+    export namespace TriggerTransformSetApiRawData {
+        export const CronExpression = '0 8 * * 2'
+
+        export type Result = void
+    }
 }

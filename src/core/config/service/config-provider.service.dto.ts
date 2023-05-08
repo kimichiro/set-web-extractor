@@ -2,6 +2,8 @@ export namespace ConfigProviderServiceDto {
     export enum ConfigKey {
         NodeEnv = 'NODE_ENV',
 
+        AppDebug = 'APP_DEBUG',
+
         BullDelay = 'BULL_DELAY',
         BullTimeout = 'BULL_TIMEOUT',
 
@@ -21,6 +23,8 @@ export namespace ConfigProviderServiceDto {
     export interface ConfigValueType {
         [ConfigKey.NodeEnv]: string
 
+        [ConfigKey.AppDebug]: boolean
+
         [ConfigKey.BullDelay]: number
         [ConfigKey.BullTimeout]: number
 
@@ -39,6 +43,8 @@ export namespace ConfigProviderServiceDto {
 
     export const ConfigDefaultValue: ConfigValueType = {
         [ConfigKey.NodeEnv]: 'development',
+
+        [ConfigKey.AppDebug]: false,
 
         [ConfigKey.BullDelay]: 1000,
         [ConfigKey.BullTimeout]: 60000,

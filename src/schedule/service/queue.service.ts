@@ -26,7 +26,10 @@ export class QueueService {
             case Dto.MessageType.SetApiLoadFetchSymbolData:
             case Dto.MessageType.SetApiExtractUpsertSymbolList:
             case Dto.MessageType.SetApiExtractUpdateSymbol:
-            case Dto.MessageType.SetApiExtractUpsertFinancialStatement:
+            case Dto.MessageType.SetApiExtractInsertFinancialStatement:
+            case Dto.MessageType.SetApiExtractInsertTradingStat:
+            case Dto.MessageType.SetApiTransformEnqueueSymbolList:
+            case Dto.MessageType.SetApiTransformUpsertBasicInfo:
                 return await this.pushSetApiQueue(type, data)
             default: {
                 this.logService.info('Queue name not supported')

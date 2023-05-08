@@ -10,6 +10,10 @@ export class ConfigProviderService {
         return this.getString(Dto.ConfigKey.NodeEnv) === 'production'
     }
 
+    isDebug(): boolean {
+        return this.getBoolean(Dto.ConfigKey.AppDebug) && !this.isProduction()
+    }
+
     getString<TKey extends Dto.ConfigKey>(
         key: Dto.GetString.Params<TKey>,
     ): Dto.GetString.Result<TKey> {

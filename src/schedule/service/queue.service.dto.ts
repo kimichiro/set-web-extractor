@@ -4,7 +4,10 @@ export namespace QueueServiceDto {
         SetApiLoadFetchSymbolData = 'set-api-load.fetch-symbol-data',
         SetApiExtractUpsertSymbolList = 'set-api-extract.upsert-symbol-list',
         SetApiExtractUpdateSymbol = 'set-api-extract.update-symbol',
-        SetApiExtractUpsertFinancialStatement = 'set-api-extract.upsert-financial-statement',
+        SetApiExtractInsertFinancialStatement = 'set-api-extract.insert-financial-statement',
+        SetApiExtractInsertTradingStat = 'set-api-extract.insert-trading-stat',
+        SetApiTransformEnqueueSymbolList = 'set-api-transform.enqueue-symbol-list',
+        SetApiTransformUpsertBasicInfo = 'set-api-transform.upsert-basic-info',
     }
 
     export namespace PushMessage {

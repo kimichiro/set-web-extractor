@@ -12,6 +12,16 @@ import { DbContextService } from '../service/db-context.service'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 import { UpsertOptions } from 'typeorm/repository/UpsertOptions'
 
+type Criteria =
+    | string
+    | string[]
+    | number
+    | number[]
+    | Date
+    | Date[]
+    | ObjectId
+    | ObjectId[]
+
 export class BaseRepository<TEntity extends ObjectLiteral> {
     @Inject()
     private readonly dbContextService: DbContextService
@@ -49,15 +59,7 @@ export class BaseRepository<TEntity extends ObjectLiteral> {
     }
 
     async update(
-        criteria:
-            | string
-            | string[]
-            | number
-            | number[]
-            | Date
-            | Date[]
-            | ObjectId
-            | ObjectId[],
+        criteria: Criteria,
         partialEntity: QueryDeepPartialEntity<TEntity>,
     ): Promise<TEntity[]> {
         if (Array.isArray(criteria) && criteria.length === 0) {
@@ -98,6 +100,20 @@ export class BaseRepository<TEntity extends ObjectLiteral> {
                     skipUpdateIfNoValuesChanged: true,
                     ...conflictPathsOrOptions,
                 }),
+        )
+
+        return result.generatedMaps as TEntity[]
+    }
+
+    async delete(criteria: Criteria): Promise<TEntity[]> {
+        if (Array.isArray(criteria) && criteria.length === 0) {
+            return []
+        }
+
+        const result = await this.activateContext(
+            entityManager =>
+                entityManager.softDelete(this.repository.target, criteria),
+            () => this.repository.softDelete(criteria),
         )
 
         return result.generatedMaps as TEntity[]

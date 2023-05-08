@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
 import { LogService } from '../../core/log/service/log.service'
 import { CronJobServiceDto as Dto } from './cron-job.service.dto'
-import { SetApiLoadService } from './set-api-load.service'
 import { SetApiExtractService } from './set-api-extract.service'
+import { SetApiLoadService } from './set-api-load.service'
+import { SetApiTransformService } from './set-api-transform.service'
 
 @Injectable()
 export class CronJobService {
@@ -11,6 +12,7 @@ export class CronJobService {
         private readonly logService: LogService,
         private readonly setWebLoadService: SetApiLoadService,
         private readonly setApiExtractService: SetApiExtractService,
+        private readonly setApiTransformService: SetApiTransformService,
     ) {}
 
     @Cron(Dto.TriggerLoadSetApiRawData.CronExpression)
@@ -39,6 +41,21 @@ export class CronJobService {
 
         this.logService.info(
             `Cron success ${this.triggerExtractSetApiRawData.name}`,
+            CronJobService.name,
+        )
+    }
+
+    @Cron(Dto.TriggerTransformSetApiRawData.CronExpression)
+    async triggerTransformSetApiRawData(): Promise<Dto.TriggerTransformSetApiRawData.Result> {
+        this.logService.info(
+            `Cron begin ${this.triggerTransformSetApiRawData.name}`,
+            CronJobService.name,
+        )
+
+        await this.setApiTransformService.enqueueSymbolList()
+
+        this.logService.info(
+            `Cron success ${this.triggerTransformSetApiRawData.name}`,
             CronJobService.name,
         )
     }
