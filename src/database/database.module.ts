@@ -15,6 +15,7 @@ import { SymbolRepository } from './repository/symbol.repository'
 import { FinancialStatementRepository } from './repository/financial-statement.repository'
 import { TradingStatRepository } from './repository/trading-stat.repository'
 import { FinancialRatioRepository } from './repository/financial-ratio.repository'
+import { ReportBasicInfoRepository } from './repository/report-basic-info.repository'
 
 @Module({
     imports: [
@@ -62,6 +63,7 @@ import { FinancialRatioRepository } from './repository/financial-ratio.repositor
         FinancialStatementRepository,
         FinancialRatioRepository,
         TradingStatRepository,
+        ReportBasicInfoRepository,
     ],
     exports: [
         DbContextService,
@@ -70,6 +72,7 @@ import { FinancialRatioRepository } from './repository/financial-ratio.repositor
         FinancialStatementRepository,
         FinancialRatioRepository,
         TradingStatRepository,
+        ReportBasicInfoRepository,
     ],
 })
 export class DatabaseModule implements NestModule {

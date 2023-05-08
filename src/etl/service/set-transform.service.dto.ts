@@ -1,6 +1,10 @@
 import { SymbolEntity } from '../../database/entity/symbol.entity'
 
 export namespace SetApiTransformServiceDto {
+    export enum UnitMultiplier {
+        OneMillion = 1000000,
+    }
+
     export namespace GetPendingSymbolList {
         export type Result = SymbolEntity[]
     }
