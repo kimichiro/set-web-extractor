@@ -59,6 +59,7 @@ export class SetTransformService {
                     await this.financialStatementRepository.find({
                         where: {
                             symbol: { symbol },
+                            status: 'Audited',
                         },
                         order: {
                             updatedAt: 'ASC',
