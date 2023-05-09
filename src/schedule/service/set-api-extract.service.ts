@@ -36,7 +36,7 @@ export class SetApiExtractService {
                         market.toUpperCase() === 'SET' &&
                         securityType.toUpperCase() === 'S',
                 )
-                .flatMap(symbol => [
+                .flatMap(({ symbol }) => [
                     this.queueService.pushMessage({
                         type: QueueServiceDto.MessageType
                             .SetApiExtractInsertFinancialStatement,

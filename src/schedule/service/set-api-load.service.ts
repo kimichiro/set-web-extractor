@@ -14,21 +14,19 @@ export class SetApiLoadService {
     async listSymbol(): Promise<Dto.ListSymbol.Result> {
         const symbolList = await this.setCollectionService.loadSymbolList()
 
-        const symbols = symbolList.securitySymbols
-            .filter(
-                ({ market, securityType }) =>
-                    market.toUpperCase() === 'SET' &&
-                    securityType.toUpperCase() === 'S',
-            )
-            .map(({ symbol }) => symbol)
-
         await Promise.all(
-            symbols.map(symbol =>
-                this.queueService.pushMessage({
-                    type: QueueServiceDto.MessageType.SetApiLoadFetchSymbolData,
-                    data: { symbol },
-                }),
-            ),
+            symbolList.securitySymbols
+                .filter(
+                    ({ market, securityType }) =>
+                        market.toUpperCase() === 'SET' &&
+                        securityType.toUpperCase() === 'S',
+                )
+                .map(({ symbol }) =>
+                    this.queueService.pushMessage({
+                        type: QueueServiceDto.MessageType.SetApiLoadFetchSymbolData,
+                        data: { symbol },
+                    }),
+                ),
         )
     }
 
