@@ -34,9 +34,16 @@ export class DbContextService {
                     defaultTransaction: this.createTransaction(),
                 },
                 async () => {
-                    await next()
-
-                    resolve(true)
+                    try {
+                        await next()
+                    } catch (error) {
+                        this.logService.error(
+                            `Context callback error - [${error?.response?.status}] ${error.message}`,
+                            DbContextService.name,
+                        )
+                    } finally {
+                        resolve(true)
+                    }
                 },
             )
         })
