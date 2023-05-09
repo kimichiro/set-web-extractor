@@ -14,13 +14,15 @@ export class SetApiTransformService {
     async enqueueSymbolList(): Promise<Dto.EnqueueSymbolList.Result> {
         const symbolList = await this.setTransformService.getPendingSymbolList()
 
-        symbolList.forEach(({ symbol }) => {
-            this.queueService.pushMessage({
-                type: QueueServiceDto.MessageType
-                    .SetApiTransformUpsertBasicInfo,
-                data: { symbol },
-            })
-        })
+        await Promise.all(
+            symbolList.map(({ symbol }) =>
+                this.queueService.pushMessage({
+                    type: QueueServiceDto.MessageType
+                        .SetApiTransformUpsertBasicInfo,
+                    data: { symbol },
+                }),
+            ),
+        )
     }
 
     async upsertBasicInfo(

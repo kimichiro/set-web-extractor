@@ -20,22 +20,35 @@ export class SetApiExtractService {
             symbolList = symbolList.filter((_, index) => index < 50)
         }
 
-        symbolList.forEach(({ symbol }) => {
-            this.queueService.pushMessage({
-                type: QueueServiceDto.MessageType.SetApiExtractUpdateSymbol,
-                data: { symbol },
-            })
-            this.queueService.pushMessage({
-                type: QueueServiceDto.MessageType
-                    .SetApiExtractInsertFinancialStatement,
-                data: { symbol },
-            })
-            this.queueService.pushMessage({
-                type: QueueServiceDto.MessageType
-                    .SetApiExtractInsertTradingStat,
-                data: { symbol },
-            })
-        })
+        await Promise.all(
+            symbolList.map(({ symbol }) =>
+                this.queueService.pushMessage({
+                    type: QueueServiceDto.MessageType.SetApiExtractUpdateSymbol,
+                    data: { symbol },
+                }),
+            ),
+        )
+
+        await Promise.all(
+            symbolList
+                .filter(
+                    ({ market, securityType }) =>
+                        market.toUpperCase() === 'SET' &&
+                        securityType.toUpperCase() === 'S',
+                )
+                .flatMap(symbol => [
+                    this.queueService.pushMessage({
+                        type: QueueServiceDto.MessageType
+                            .SetApiExtractInsertFinancialStatement,
+                        data: { symbol },
+                    }),
+                    this.queueService.pushMessage({
+                        type: QueueServiceDto.MessageType
+                            .SetApiExtractInsertTradingStat,
+                        data: { symbol },
+                    }),
+                ]),
+        )
     }
 
     async updateSymbol(

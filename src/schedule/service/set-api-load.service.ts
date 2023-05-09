@@ -16,18 +16,20 @@ export class SetApiLoadService {
 
         const symbols = symbolList.securitySymbols
             .filter(
-                s =>
-                    s.market.toUpperCase() === 'SET' &&
-                    s.securityType.toUpperCase() === 'S',
+                ({ market, securityType }) =>
+                    market.toUpperCase() === 'SET' &&
+                    securityType.toUpperCase() === 'S',
             )
-            .map(s => s.symbol)
+            .map(({ symbol }) => symbol)
 
-        for (const symbol of symbols) {
-            await this.queueService.pushMessage({
-                type: QueueServiceDto.MessageType.SetApiLoadFetchSymbolData,
-                data: { symbol },
-            })
-        }
+        await Promise.all(
+            symbols.map(symbol =>
+                this.queueService.pushMessage({
+                    type: QueueServiceDto.MessageType.SetApiLoadFetchSymbolData,
+                    data: { symbol },
+                }),
+            ),
+        )
     }
 
     async fetchSymbolData(
