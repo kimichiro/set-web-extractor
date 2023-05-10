@@ -23,12 +23,21 @@ export class SetTransformService {
 
     async getPendingSymbolList(): Promise<Dto.GetPendingSymbolList.Result> {
         const symbolEntities = await this.symbolRepository.find({
+            where: {
+                financialStatements: {
+                    beginAt: Not(IsNull()),
+                    endAt: Not(IsNull()),
+                    accountCode: Not(IsNull()),
+                    year: Not(IsNull()),
+                    status: Not(IsNull()),
+                },
+            },
             relations: {
                 financialStatements: true,
             },
         })
 
-        return symbolEntities.filter(e => e.financialStatements.length > 0)
+        return symbolEntities
     }
 
     async upsertBasicInfo(

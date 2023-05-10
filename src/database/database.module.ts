@@ -41,7 +41,7 @@ import { ReportBasicInfoRepository } from './repository/report-basic-info.reposi
                     ConfigProviderServiceDto.ConfigKey.PostgresDb,
                 ),
                 synchronize: false,
-                logging: true,
+                logging: configProviderService.isDebug(),
                 entities: [...entities],
                 namingStrategy: new SnakeNamingStrategy(),
                 ssl: configProviderService.isProduction(),
