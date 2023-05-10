@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { SetApiTransformServiceDto as Dto } from './set-transform.service.dto'
 import { IsNull, Not } from 'typeorm'
+import { LogService } from '../../core/log/service/log.service'
 import { ReportBasicInfoEntity } from '../../database/entity/report-basic-info.entity'
 import { SymbolEntity } from '../../database/entity/symbol.entity'
 import { FinancialRatioRepository } from '../../database/repository/financial-ratio.repository'
@@ -13,6 +14,7 @@ import { DbContextService } from '../../database/service/db-context.service'
 @Injectable()
 export class SetTransformService {
     constructor(
+        private readonly logService: LogService,
         private readonly dbContextService: DbContextService,
         private readonly symbolRepository: SymbolRepository,
         private readonly financialStatementRepository: FinancialStatementRepository,
@@ -22,24 +24,31 @@ export class SetTransformService {
     ) {}
 
     async getPendingSymbolList(): Promise<Dto.GetPendingSymbolList.Result> {
-        const symbolEntities = await this.symbolRepository.find({
-            where: {
-                financialStatements: [
-                    {
-                        beginAt: Not(IsNull()),
-                        endAt: Not(IsNull()),
-                        accountCode: Not(IsNull()),
-                        year: Not(IsNull()),
-                        status: Not(IsNull()),
-                    },
-                ],
-            },
-            relations: {
-                financialStatements: true,
-            },
-        })
-
-        return symbolEntities
+        try {
+            const symbolEntities = await this.symbolRepository.find({
+                where: {
+                    financialStatements: [
+                        {
+                            beginAt: Not(IsNull()),
+                            endAt: Not(IsNull()),
+                            accountCode: Not(IsNull()),
+                            year: Not(IsNull()),
+                            status: Not(IsNull()),
+                        },
+                    ],
+                },
+                relations: {
+                    financialStatements: true,
+                },
+            })
+    
+            return symbolEntities
+        } catch (error) {
+            this.logService.error(
+                `Function ${this.getPendingSymbolList.name} - [${error?.response?.status}] ${error.message}`,
+                SetTransformService.name,
+            )
+        }
     }
 
     async upsertBasicInfo(
